@@ -404,6 +404,8 @@ ArrayList tiposRentabilidad=(ArrayList)(request.getSession().getAttribute("tipos
                 
                 
                 </div>
+                </div>
+                </div>
               <!--                  -->
 
 
