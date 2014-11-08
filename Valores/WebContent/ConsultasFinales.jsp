@@ -11,8 +11,14 @@
 String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
-<%ArrayList tiposValor = (ArrayList)(request.getSession().getAttribute("tiposValor"));
- ArrayList tiposRentabilidad = (ArrayList)(request.getSession().getAttribute("tiposRentabilidad"));%>
+<% ResultSet tiposValor = (ResultSet)(request.getAttribute("tiposValor")); %>
+<% ResultSet intermediarios = (ResultSet)(request.getAttribute("intermediarios")); %>
+<% ArrayList tiposValorA = new ArrayList();
+int i=0;
+while(tiposValor.next()){
+	tiposValorA.add(i, tiposValor.getString("nombre"));
+	i++;
+}%>
 
 <head>
 
@@ -182,6 +188,12 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                     <li>
                         <a href="Miembros.jsp"><i class="fa fa-fw fa-edit"></i> Miembros</a>
                     </li>
+                     <li>
+                        <a href="ConsultarMovimientos.jsp"><i class="fa fa-fw fa-edit"></i> Consultar Movimientos</a>
+                    </li>
+                    <li>
+                        <a href="ConsultarPortafolios.jsp"><i class="fa fa-fw fa-edit"></i> Consultar Portafolios</a>
+                    </li>
                     <%}else if(tipo.equals("INTERMEDIARIO")){ %>
                     <li>
                         <a href="Autorizar.html"><i class="fa fa-fw fa-table"></i> Autorizar</a>
@@ -231,45 +243,163 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Consultas ! 
+                            Consultas Finales
                         </h1>
                        
                     </div>
                 </div>
 
-              <!--  Consultar existencias de valores -->
-                <h2> Consultar existencias de valores</h2>
-                <form action="Consultar.html" method="post" >
+          		<div class="row">
+                <div class="well col-md-4">
+                <h3>Consultar Movimientos</h3>
+                <form action="ConsultarMovimientos.html" method="post" >
+              
                             <div class="form-group input-group">
-                            	<br>
+                       
                             	<input type="hidden" class="form-control" name="tipoConsulta" value="valores">
-                            	<h3> Tipo de Valor </h3>
+                            		<!-- Rango de fechas -->
+	                            	<div class="row">
+			                            	<div class="col-md-5">
+			                            	<h4> Fecha Inicial </h4>
+			                            	<input type="text" class="form-control" name="fechaInicial" placeholder="DD/MM/AA" id="datepicker">
+			                            	</div>
+			                            	<div class="col-md-5">
+			                            	<h4> Fecha Final </h4>
+			                            	<input type="text" class="form-control" name="fechaFinal" placeholder="DD/MM/AA" id="datepicker">
+			                            	</div>
+			                        </div>
+                            	
+                            	 <!-- ///////////////////////////////////7 -->
+                            	
+                            	<h4> Tipo de Valor </h4>
                             	<select class="form-control" name="tipoValor">
                             	<option>N/A</option>
-                            	<%Iterator it = tiposValor.iterator();
-                            	while(it.hasNext()){ 
-                            		String el = (String)(it.next());%>
+                            	<% for(int z=0;z<tiposValorA.size();z++){ %>
                             	
-                            	<option><%=el %></option>
+                            	<option><%=tiposValorA.get(z) %></option>
                             	<% 	
                             	}
                             	 %>
                             	</select >
                                   <br>
-                           
-                                  <h3> Cantidad del valor </h3>
-                            	<input type="text" class="form-control" name="cantidadValor" placeholder="N/A">
-                                  <br>   
+                                 <h4> Monto </h4>
+                            	<select class="form-control" name="monto">
+                            	<option>N/A</option>
+                            	<option>0-5000</option>
+                            	<option>5000-10000</option>
+                            	<option>10000-15000</option>
+                            	<option>15000-20000</option>
+                            	<option>20000-25000</option>
+                            	<option>25000-30000</option>
+                            	<option>30000-35000</option>
+                            	<option>35000-40000</option>
+                            	</select >
+                                  <br>
+                                 <h4> id Intermediario </h4>
+                            	<select class="form-control" name="idIntermediario">
+                            	<option>N/A</option>
+                            	<% while(intermediarios.next()){ %>
+                            	
+                            	<option><%=intermediarios.getString("nombre") %></option>
+                            	<% 	
+                            	}
+                            	 %>
+                            	</select >
+                                  <br>
+                                  <h4>Incluir resultados del filtro</h4>
+                                  <input type="radio" name="group1" value="si"> si<br>
+									<input type="radio" name="group1" value="no" checked> no<br>
+                                   <br>
+                                    
 
-                               
+                         
+
+
 
                                 <button type="submit" class="btn btn-primary btn-lg">Consultar</button>
                                 
                             </div>
                 </form>
+                </div>
+                
+                <div class=" col-md-8">
+                	<div class="row">
+		                 <div class="well col-md-4">
+		                <h3>Consultar Portafolios</h3>
+		                <form action="Consultar.html" method="post" >
+		                            <div class="form-group input-group">
+		                            
+		                            	<input type="hidden" class="form-control" name="tipoConsulta" value="valores">
+		                            	<h4> Tipo de Valor </h4>
+		                            	<select class="form-control" name="tipoValor">
+		                            	<option>N/A</option>
+		                            	<% for(int z=0;z<tiposValorA.size();z++){ %>
+                            	
+                            	<option><%=tiposValorA.get(z) %></option>
+                            	<% 	
+                            	}
+                            	 %>
+		                            	</select >
+		                                  <br>
+		                           
+		                                  <h4> Cantidad del valor </h4>
+		                            	<input type="text" class="form-control" name="cantidadValor" placeholder="N/A">
+		                                  <br> <br>   
+		
+		                               
+		
+		                                <button type="submit" class="btn btn-primary btn-lg">Consultar</button>
+		                                
+		                            </div>
+		                </form>
+		                </div>
+		                
+		                </div>
+		                
+		                <div class="row">
+		                
+		                 <div class="well col-md-4">
+		                 <h3>Consultar Valores</h3>
+		                <form action="Consultar.html" method="post" >
+		                            <div class="form-group input-group">
+		                            
+		                            	<input type="hidden" class="form-control" name="tipoConsulta" value="valores">
+		                            	<h4> Tipo de Valor </h4>
+		                            	<select class="form-control" name="tipoValor">
+		                            	<option>N/A</option>
+		                            	<% for(int z=0;z<tiposValorA.size();z++){ %>
+                            	
+                            	<option><%=tiposValorA.get(z) %></option>
+                            	<% 	
+                            	}
+                            	 %>
+		                            	</select >
+		                                  <br><br>
+		                           
+		
+		                               
+		
+		                                <button type="submit" class="btn btn-primary btn-lg">Consultar</button>
+		                                
+		                            </div>
+		                </form>
+		                </div>
+		                
+		                 </div>
+                
+                </div>
+                
+                
+                
+                
+                
+                
+                
+                
+                </div>
               <!--                  -->
 
-             
+
     
 
     <!-- /#wrapper -->
