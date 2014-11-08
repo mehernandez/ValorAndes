@@ -328,11 +328,12 @@ ArrayList tiposRentabilidad=(ArrayList)(request.getSession().getAttribute("tipos
                 </form>
                 </div>
                 
+                
                 <div class=" col-md-8">
                 	<div class="row">
 		                 <div class="well col-md-4">
 		                <h3>Consultar Portafolios</h3>
-		                <form action="Consultar.html" method="post" >
+		                <form action="ConsultarPortafolios.html" method="post" >
 		                            <div class="form-group input-group">
 		                            
 		                            	<input type="hidden" class="form-control" name="tipoConsulta" value="valores">
@@ -366,7 +367,7 @@ ArrayList tiposRentabilidad=(ArrayList)(request.getSession().getAttribute("tipos
 		                
 		                 <div class="well col-md-4">
 		                 <h3>Consultar Valores</h3>
-		                <form action="Consultar.html" method="post" >
+		                <form action="ConsultarValores.html" method="post" >
 		                            <div class="form-group input-group">
 		                            
 		                            	<input type="hidden" class="form-control" name="tipoConsulta" value="valores">

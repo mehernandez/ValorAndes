@@ -8,7 +8,6 @@
 <%@ page import="java.util.*" %>
 <% String login = (String)(request.getSession().getAttribute("login")) ;
 String tipo = (String)(request.getSession().getAttribute("tipo"));%>
-<% String tipoConsulta = request.getParameter("tipoConsulta"); %>
 <% ResultSet result = (ResultSet)(request.getAttribute("result")); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -237,22 +236,22 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                 <h2> Respuesta consulta </h2>
    <!-- Respuesta consulta 1  -->
    
-<% if(tipoConsulta.equals("valores")){ %>
+<% if(tipo.equals("consultarMovimientos")){ %>
           <div class="col-lg-6">
           	
           	<div class="table-responsive">
           		<table class="table table-hover table-striped">
           			<thead>
 						<tr>
-							<th>id Valor</th>
-							<th>Nombre</th>
-							<th>Precio</th>
-							<th>Tipo Valor</th>
+							<th>Fecha</th>
+							<th>Monto</th>
+							<th>Intermediario</th>
+							<th>Tipo Operacion</th>
+							<th># Valores</th>
+							<th>Tipos Valores</th>
+							<th>Valor</th>
 							<th>Tipo Rentabilidad</th>
-							<th>Fecha expiracion</th>
-							<th>Negociando</th>
-							<th>Oferente</th>
-							<th>Inversionista</th>
+							<th>Intermediario</th>
 							
 
 
@@ -262,15 +261,15 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
           				<!-- Aqui hay que iterar -->
           				<% while (result.next()){ %>
 						<tr>
-							<td><%=result.getString("idValor") %></td>
-							<td><%=result.getString("valor") %></td>	
-							<td><%=result.getString("precio") %></td>							
-							<td><%=result.getString("tipovalor") %></td>
-							<td><%=result.getString("tiporentabilidad") %></td>
 							<td><%=result.getString("fecha") %></td>
-							<td><%=result.getString("negociando") %></td>
-							<td><%=result.getString("oferente") %></td>
-							<td><%=result.getString("inversionista") %></td>
+							<td><%=result.getString("monto") %></td>	
+							<td><%=result.getString("intermediario") %></td>							
+							<td><%=result.getString("tipoOperacion") %></td>
+							<td><%=result.getString("numeroValores") %></td>
+							<td><%=result.getString("tipVal") %></td>
+							<td><%=result.getString("valor") %></td>
+							<td><%=result.getString("tipoRent") %></td>
+							<td><%=result.getString("intermediario") %></td>
 						
 							
 						</tr>
@@ -281,7 +280,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
           	</div>	
           </div>
                 <!--                        -->
-<%} else if(tipoConsulta.equals("operaciones")){ %>
+<%} else if(tipo.equals("consultarPortafolios")){ %>
                   <!-- Respuesta consulta 2  -->
 
           <div class="col-lg-6">
@@ -290,11 +289,9 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
           		<table class="table table-hover table-striped">
           			<thead>
 						<tr>
-							<th>id Operacion</th>
-							<th>Fecha</th>
-							<th>Valor</th>
-							<th>Numero Valores</th>
-							<th>Costo</th>
+							<th>id Entidad</th>
+							<th>id Valor</th>
+							<th>Cantidad</th>
 							
 
 
@@ -304,11 +301,9 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
           				<!-- Aqui hay que iterar -->
 						<% while (result.next()){ %>
 						<tr>
-							<td><%=result.getString("idOperacion") %></td>
-							<td><%=result.getString("fecha") %></td>
-							<td><%=result.getString("Valor") %></td>
+							<td><%=result.getString("idEntidad") %></td>
+							<td><%=result.getString("idValor") %></td>
 							<td><%=result.getString("cantidad") %></td>
-							<td><%=result.getString("monto") %></td>
 						</tr>
 						<%} %>
 						<!--                     -->
@@ -318,7 +313,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
           </div>
                 <!--                        -->
 
-<% } else if(tipoConsulta.equals("mayorMovimiento")){ %>
+<% } else if(tipo.equals("consultarValores")){ %>
                   <!-- Respuesta consulta 3  -->
 
           <div class="col-lg-6">
@@ -327,11 +322,9 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
           		<table class="table table-hover table-striped">
           			<thead>
 						<tr>
-							<th>id Valor</th>	
-							<th>Valor</th>
-							<th>Tipo Rentabilidad</th>							
-							<th>Costo Promedio</th>
-							<th>Cantidad de veces negociado</th>
+							<th>id Entidad</th>	
+							<th>id Valor</th>
+							<th>Cantidad</th>					
 							
 
 
@@ -341,11 +334,9 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
           				<!-- Aqui hay que iterar -->
 						<% while (result.next()){ %>
 						<tr>
-							<td><%=result.getString("idvalor") %></td>
-							<td><%=result.getString("valor") %></td>
-							<td><%=result.getString("tiporentabilidad") %></td>						
-							<td><%=result.getString("costoPromedio") %></td>
-							<td><%=result.getString("negociado") %></td>
+							<td><%=result.getString("idEntidad") %></td>
+							<td><%=result.getString("idValor") %></td>
+							<td><%=result.getString("cantidad") %></td>		
 						</tr>
 						<%} %>
 						<!--                     -->
@@ -354,47 +345,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
           	</div>	
           </div>
                 <!--                        -->
-<%} else if(tipoConsulta.equals("masActivo")){ %>
-                       <!-- Respuesta consulta 4  -->
-
-          <div class="col-lg-6">
-          	
-          	<div class="table-responsive">
-          		<table class="table table-hover table-striped">
-          			<thead>
-						<tr>
-							<th>Nombre</th>
-							<th>Numero Registro</th>
-							<th>Ciudad</th>
-							<th>Direccion</th>
-							<th>Telefono</th>
-							<th>Cantidad de operaciones</th>
-							
-							
-
-
-						</tr>
-          			</thead>	
-          			<tbody>
-          				<!-- Aqui hay que iterar -->
-						<% while (result.next()){ %>
-						<tr>
-
-							<td><%=result.getString("nombre") %></td>
-							<td><%=result.getString("numeroregistro") %></td>
-							<td><%=result.getString("ciudad") %></td>
-							<td><%=result.getString("direccion") %></td>
-							<td><%=result.getString("telefono") %></td>
-							<td><%=result.getString("operaciones") %></td>
-						</tr>
-						<%} %>
-						<!--                     -->
-          			</tbody>
-          		</table>	
-          	</div>	
-          </div>
-          <%} %>
-                <!--                        -->
+<%}%>
     
 
     <!-- /#wrapper -->
