@@ -42,23 +42,31 @@ public class ConsultarPortafolios extends HttpServlet {
 		// TODO Auto-generated method stub
 		String tipoValor = request.getParameter("tipoValor");
 		String cantidadValorS = request.getParameter("cantidadValor");
-		int cantidadValor=Integer.parseInt(cantidadValorS);
+		String resp = "bien";
+		
 		
 		// Aca se hace la logica
 		Connection conn = null;
 		Statement st = this.crearConexion(conn);
 		try {
+			int cantidadValor=Integer.parseInt(cantidadValorS);
+			
 			ResultSet rs = st
-					.executeQuery("");
+					.executeQuery("select * from (select * from (select distinct entidad as identidad from operaciones where monto >"+cantidadValor+") natural join "+ 
+"(select distinct identidad  from portafolio,Valores,tiposvalor where portafolio.idvalor=valores.idvalor and valores.tipovalor=tiposvalor.idtipovalor and tiposvalor.nombre='"+tipoValor+"')) "+ 
+"natural join portafolio");
 			request.setAttribute("result", rs);
 			request.setAttribute("tipo", "consultarPortafolios");
 
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			resp = "mal";
 		}
 		this.cerrar(conn);
+		
+		request.setAttribute("respuesta", resp);
 		
 		String url = "/RespuestaConsultasFinales.jsp"; // relative url for display jsp
 		// page

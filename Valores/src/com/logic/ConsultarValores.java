@@ -40,14 +40,14 @@ public class ConsultarValores extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String tipoValor = request.getParameter("tipoValor");
+		String valor = request.getParameter("tipoValor");
 		
 		// Aca se hace la logica
 		Connection conn = null;
 		Statement st = this.crearConexion(conn);
 		try {
 			ResultSet rs = st
-					.executeQuery("");
+					.executeQuery("select * from (select distinct entidad as identidad from operaciones where valor ="+valor+") natural join portafolio");
 			request.setAttribute("result", rs);
 			request.setAttribute("tipo", "consultarValores");
 

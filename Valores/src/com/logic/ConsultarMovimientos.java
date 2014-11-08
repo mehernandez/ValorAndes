@@ -19,14 +19,14 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ConsultarMovimientos extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ConsultarMovimientos() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public ConsultarMovimientos() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -40,38 +40,74 @@ public class ConsultarMovimientos extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+
 		String fechainicial = request.getParameter("fechaInicial");
 		String fechaFinal = request.getParameter("fechaFinal");
 		String tipoValor = request.getParameter("tipoValor");
 		String monto = request.getParameter("monto");
 		String idIntermediario = request.getParameter("idIntermediario");
 		String incluir = request.getParameter("group1");
-		
+
+		String where = " where 1=1 ";
+
+		String operador = "=";
+
+		String resp = "mal";
 		// Aca se hace la logica
 		Connection conn = null;
 		Statement st = this.crearConexion(conn);
 		try {
-			ResultSet rs = st
-					.executeQuery("");
-			request.setAttribute("result", rs);
-			request.setAttribute("tipo", "consultarMovimientos");
 
-		} catch (SQLException e) {
+			if(!fechainicial.isEmpty() && !fechaFinal.isEmpty()){
+
+				if(!monto.isEmpty()){
+					int mont = Integer.parseInt(monto);
+				}
+
+				if(incluir.equals("no")){
+					operador = "<>";
+				}
+				if(!tipoValor.isEmpty()){
+					where += " and tipVal"+operador+"'"+tipoValor+"' ";
+				}
+				if(!monto.isEmpty()){
+					where += " and monto"+operador+monto+" ";
+				}
+				if(!idIntermediario.isEmpty()){
+					where += "and intermediario"+operador+"'"+idIntermediario+"' ";
+				}
+
+
+				
+				ResultSet rs = st
+						.executeQuery("select * from (SELECT fecha,monto, intermediarios.nombre as intermediario ,tipoOperacion,numerovalores,"
+								+ "operaciones.tipovalor as tipval ,valores.nombre as valor, tiposRentabilidad.nombre as "+
+"tiporent , inversionistas.nombre as intermediario FROM OPERACIONES , VALORES , tiposrentabilidad,inversionistas,intermediarios "+
+								"where valor=idvalor and  tiporentabilidad = idtiporentabilidad and operaciones.entidad=inversionistas.identidad) "
++ where + "and fecha between '"+fechainicial+"' and '"+fechaFinal+"'");
+				request.setAttribute("result", rs);
+				request.setAttribute("tipo", "consultarMovimientos");
+				resp = "bien";
+			}
+
+
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.cerrar(conn);
-		
+
+		request.setAttribute("respuesta", resp);
+
 		String url = "/RespuestaConsultasFinales.jsp"; // relative url for display jsp
 		// page
 		ServletContext sc = getServletContext();
 		RequestDispatcher rd = sc.getRequestDispatcher(url);
 		rd.forward(request, response);
-		
+
 	}
-	
-	
+
+
 	public Statement crearConexion(Connection conn) {
 
 		try {
