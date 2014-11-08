@@ -48,7 +48,7 @@ public class ConsultarMovimientos extends HttpServlet {
 		String idIntermediario = request.getParameter("idIntermediario");
 		String incluir = request.getParameter("group1");
 		
-		
+		// Aca se hace la logica
 		Connection conn = null;
 		Statement st = this.crearConexion(conn);
 		try {

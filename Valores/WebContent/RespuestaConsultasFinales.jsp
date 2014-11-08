@@ -13,6 +13,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 <html lang="en">
 
 <head>
+<!--  HEllo -->
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

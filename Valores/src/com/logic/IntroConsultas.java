@@ -47,7 +47,7 @@ public class IntroConsultas extends HttpServlet {
 			e.printStackTrace();
 		}
 		this.cerrar(conn);
-		
+		// Aca se hace la logica
 		String url = "/ConsultasFinales.jsp"; // relative url for display jsp
 		// page
 		ServletContext sc = getServletContext();

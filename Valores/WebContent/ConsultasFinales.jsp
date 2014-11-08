@@ -12,6 +12,8 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 
+<!--  HEllo -->
+
 <% ResultSet intermediarios = (ResultSet)(request.getAttribute("intermediarios"));
 ArrayList tiposValor=(ArrayList)(request.getSession().getAttribute("tiposValor"));
 ArrayList tiposRentabilidad=(ArrayList)(request.getSession().getAttribute("tiposRentabilidad"));

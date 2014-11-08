@@ -42,7 +42,7 @@ public class ConsultarValores extends HttpServlet {
 		// TODO Auto-generated method stub
 		String tipoValor = request.getParameter("tipoValor");
 		
-		
+		// Aca se hace la logica
 		Connection conn = null;
 		Statement st = this.crearConexion(conn);
 		try {
@@ -51,7 +51,7 @@ public class ConsultarValores extends HttpServlet {
 			request.setAttribute("result", rs);
 			request.setAttribute("tipo", "consultarValores");
 
-
+			// Aca se hace la logica
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

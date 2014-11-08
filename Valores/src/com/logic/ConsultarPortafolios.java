@@ -44,6 +44,7 @@ public class ConsultarPortafolios extends HttpServlet {
 		String cantidadValorS = request.getParameter("cantidadValor");
 		int cantidadValor=Integer.parseInt(cantidadValorS);
 		
+		// Aca se hace la logica
 		Connection conn = null;
 		Statement st = this.crearConexion(conn);
 		try {
