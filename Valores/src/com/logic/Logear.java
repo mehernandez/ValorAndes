@@ -90,6 +90,8 @@ public class Logear extends HttpServlet {
 			ArrayList inversionistas = new ArrayList();
 			ArrayList tiposValor = new ArrayList();
 			ArrayList tiposRentabilidad = new ArrayList();
+			ArrayList valores = new ArrayList();
+			
 			try {
 				ResultSet rs = st.executeQuery("select nombre from oferentes");
 
@@ -118,6 +120,13 @@ public class Logear extends HttpServlet {
 				while (l.next()) {
 					tiposRentabilidad.add(l.getString("nombre"));
 				}
+				
+				ResultSet v = st
+						.executeQuery("select nombre, idvalor  from valores");
+				while (v.next()) {
+					valores.add((v.getInt("idValor"))+":"+(v.getString("nombre")));
+				}
+				
 				
 				request.getSession().setAttribute("oferentes", oferentes);
 				request.getSession().setAttribute("intermediarios",
