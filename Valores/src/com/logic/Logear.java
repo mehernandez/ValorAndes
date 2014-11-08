@@ -87,6 +87,9 @@ public class Logear extends HttpServlet {
 
 			ArrayList oferentes = new ArrayList();
 			ArrayList intermediarios = new ArrayList();
+			ArrayList inversionistas = new ArrayList();
+			ArrayList tiposValor = new ArrayList();
+			ArrayList tiposRentabilidad = new ArrayList();
 			try {
 				ResultSet rs = st.executeQuery("select nombre from oferentes");
 
@@ -98,10 +101,30 @@ public class Logear extends HttpServlet {
 				while (f.next()) {
 					intermediarios.add(f.getString("nombre"));
 				}
+				ResultSet k = st
+						.executeQuery("select nombre from inversionistas");
+				while (k.next()) {
+					inversionistas.add(k.getString("nombre"));
+				}
+				
+				ResultSet h = st
+						.executeQuery("select nombre from tiposvalor");
+				while (h.next()) {
+					tiposValor.add(h.getString("nombre"));
+				}
 
+				ResultSet l = st
+						.executeQuery("select nombre from tiposRentabilidad");
+				while (l.next()) {
+					tiposRentabilidad.add(l.getString("nombre"));
+				}
+				
 				request.getSession().setAttribute("oferentes", oferentes);
 				request.getSession().setAttribute("intermediarios",
 						intermediarios);
+				request.getSession().setAttribute("inversionistas", inversionistas);
+				request.getSession().setAttribute("tiposValor", tiposValor);
+				request.getSession().setAttribute("tiposRentabilidad", tiposRentabilidad);
 			} catch (SQLException e) {
 				System.out
 						.println("Error al ejecutar el query de obtener los nombres de los oferentes");
