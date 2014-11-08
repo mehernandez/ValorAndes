@@ -14,7 +14,8 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 
 <% ResultSet intermediarios = (ResultSet)(request.getAttribute("intermediarios"));
 ArrayList tiposValor=(ArrayList)(request.getSession().getAttribute("tiposValor"));
-ArrayList tiposRentabilidad=(ArrayList)(request.getSession().getAttribute("tiposRentabilidad"));%>
+ArrayList tiposRentabilidad=(ArrayList)(request.getSession().getAttribute("tiposRentabilidad"));
+ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
 <head>
 
     <meta charset="utf-8">
@@ -371,12 +372,12 @@ ArrayList tiposRentabilidad=(ArrayList)(request.getSession().getAttribute("tipos
 		                            <div class="form-group input-group">
 		                            
 		                            	<input type="hidden" class="form-control" name="tipoConsulta" value="valores">
-		                            	<h4> Tipo de Valor </h4>
+		                            	<h4> Valor </h4>
 		                            	<select class="form-control" name="tipoValor">
 		                            	<option>N/A</option>
-		                            	<% for(int z=0;z<tiposValor.size();z++){ %>
+		                            	<% for(int z=0;z<valorid.size();z++){ %>
                             	
-                            	<option><%=tiposValor.get(z) %></option>
+                            	<option><%=valorid.get(z) %></option>
                             	<% 	
                             	}
                             	 %>
