@@ -49,6 +49,8 @@ public class ConsultarValores extends HttpServlet {
 			ResultSet rs = st
 					.executeQuery("");
 			request.setAttribute("result", rs);
+			request.setAttribute("tipo", "consultarValores");
+
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

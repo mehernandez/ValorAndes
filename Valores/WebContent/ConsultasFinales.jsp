@@ -11,15 +11,10 @@
 String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
-<% ResultSet tiposValor = (ResultSet)(request.getAttribute("tiposValor")); %>
-<% ResultSet intermediarios = (ResultSet)(request.getAttribute("intermediarios")); %>
-<% ArrayList tiposValorA = new ArrayList();
-int i=0;
-while(tiposValor.next()){
-	tiposValorA.add(i, tiposValor.getString("nombre"));
-	i++;
-}%>
 
+<% ResultSet intermediarios = (ResultSet)(request.getAttribute("intermediarios"));
+ArrayList tiposValor=(ArrayList)(request.getSession().getAttribute("tiposValor"));
+ArrayList tiposRentabilidad=(ArrayList)(request.getSession().getAttribute("tiposRentabilidad"));%>
 <head>
 
     <meta charset="utf-8">
@@ -274,9 +269,9 @@ while(tiposValor.next()){
                             	<h4> Tipo de Valor </h4>
                             	<select class="form-control" name="tipoValor">
                             	<option>N/A</option>
-                            	<% for(int z=0;z<tiposValorA.size();z++){ %>
+                            	<% for(int z=0;z<tiposValor.size();z++){ %>
                             	
-                            	<option><%=tiposValorA.get(z) %></option>
+                            	<option><%=tiposValor.get(z) %></option>
                             	<% 	
                             	}
                             	 %>
@@ -295,12 +290,23 @@ while(tiposValor.next()){
                             	<option>35000-40000</option>
                             	</select >
                                   <br>
-                                 <h4> id Intermediario </h4>
+                                 <h4> Intermediario </h4>
                             	<select class="form-control" name="idIntermediario">
                             	<option>N/A</option>
                             	<% while(intermediarios.next()){ %>
                             	
                             	<option><%=intermediarios.getString("nombre") %></option>
+                            	<% 	
+                            	}
+                            	 %>
+                            	</select >
+                                  <br>
+                                  <h4> Tipo de Rentabilidad </h4>
+                            	<select class="form-control" name="tiposRentabilidad">
+                            	<option>N/A</option>
+                            	<% for(int z=0;z<tiposRentabilidad.size();z++){ %>
+                            	
+                            	<option><%=tiposRentabilidad.get(z) %></option>
                             	<% 	
                             	}
                             	 %>
@@ -333,9 +339,9 @@ while(tiposValor.next()){
 		                            	<h4> Tipo de Valor </h4>
 		                            	<select class="form-control" name="tipoValor">
 		                            	<option>N/A</option>
-		                            	<% for(int z=0;z<tiposValorA.size();z++){ %>
+		                            	<% for(int z=0;z<tiposValor.size();z++){ %>
                             	
-                            	<option><%=tiposValorA.get(z) %></option>
+                            	<option><%=tiposValor.get(z) %></option>
                             	<% 	
                             	}
                             	 %>
@@ -367,9 +373,9 @@ while(tiposValor.next()){
 		                            	<h4> Tipo de Valor </h4>
 		                            	<select class="form-control" name="tipoValor">
 		                            	<option>N/A</option>
-		                            	<% for(int z=0;z<tiposValorA.size();z++){ %>
+		                            	<% for(int z=0;z<tiposValor.size();z++){ %>
                             	
-                            	<option><%=tiposValorA.get(z) %></option>
+                            	<option><%=tiposValor.get(z) %></option>
                             	<% 	
                             	}
                             	 %>

@@ -160,7 +160,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                         <a href="Miembros.jsp"><i class="fa fa-fw fa-edit"></i> Miembros</a>
                     </li>
                      <li>
-                        <a href="IntroConsultar.html"><i class="fa fa-fw fa-edit"></i> Consultar Finales</a>
+                        <a href="IntroConsultas.html"><i class="fa fa-fw fa-edit"></i> Consultar Finales</a>
                     </li>
                   
                     <%}else if(tipo.equals("INTERMEDIARIO")){ %>

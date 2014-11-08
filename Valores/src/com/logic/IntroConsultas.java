@@ -15,15 +15,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class IntroConsultar
+ * Servlet implementation class IntroConsultas
  */
-public class IntroConsultar extends HttpServlet {
+public class IntroConsultas extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public IntroConsultar() {
+    public IntroConsultas() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,18 +35,12 @@ public class IntroConsultar extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		
-		
 		Connection conn = null;
 		Statement st = this.crearConexion(conn);
 		try {
 			ResultSet rs = st
-					.executeQuery("Select nombre from tiposvalor");
-			request.setAttribute("tiposValor", rs);
-			System.out.println("NOMBRE::::::::"+rs.getString("nombre"));
-			ResultSet rs1 = st
-					.executeQuery("SELECT nombre from intermediarios");
-			request.setAttribute("intermediarios", rs1);
-			System.out.println("NOMBRE::::::::"+rs1.getString("nombre"));
+					.executeQuery("select nombre from intermediarios");
+			request.setAttribute("intermediarios", rs);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -59,6 +53,7 @@ public class IntroConsultar extends HttpServlet {
 		ServletContext sc = getServletContext();
 		RequestDispatcher rd = sc.getRequestDispatcher(url);
 		rd.forward(request, response);
+		
 	}
 
 	/**

@@ -55,6 +55,7 @@ public class ConsultarMovimientos extends HttpServlet {
 			ResultSet rs = st
 					.executeQuery("");
 			request.setAttribute("result", rs);
+			request.setAttribute("tipo", "consultarMovimientos");
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

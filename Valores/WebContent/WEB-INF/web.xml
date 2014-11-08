@@ -84,11 +84,6 @@
   <servlet-class>com.logic.MostrarMiembro</servlet-class>
  </servlet>
  <servlet>
-  <display-name>IntroConsultar</display-name>
-  <servlet-name>IntroConsultar</servlet-name>
-  <servlet-class>com.logic.IntroConsultar</servlet-class>
- </servlet>
- <servlet>
   <display-name>ConsultarMovimientos</display-name>
   <servlet-name>ConsultarMovimientos</servlet-name>
   <servlet-class>com.logic.ConsultarMovimientos</servlet-class>
@@ -102,6 +97,11 @@
   <display-name>ConsultarValores</display-name>
   <servlet-name>ConsultarValores</servlet-name>
   <servlet-class>com.logic.ConsultarValores</servlet-class>
+ </servlet>
+ <servlet>
+  <display-name>IntroConsultas</display-name>
+  <servlet-name>IntroConsultas</servlet-name>
+  <servlet-class>com.logic.IntroConsultas</servlet-class>
  </servlet>
  <servlet-mapping>
   <servlet-name>Prueba</servlet-name>
@@ -168,10 +168,6 @@
   <url-pattern>/MostrarMiembro</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
-  <servlet-name>IntroConsultar</servlet-name>
-  <url-pattern>/IntroConsultar.html</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
   <servlet-name>ConsultarMovimientos</servlet-name>
   <url-pattern>/ConsultarMovimientos.html</url-pattern>
  </servlet-mapping>
@@ -182,6 +178,10 @@
  <servlet-mapping>
   <servlet-name>ConsultarValores</servlet-name>
   <url-pattern>/ConsultarValores.html</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>IntroConsultas</servlet-name>
+  <url-pattern>/IntroConsultas.html</url-pattern>
  </servlet-mapping>
  <session-config>
   <session-timeout>-1</session-timeout>
