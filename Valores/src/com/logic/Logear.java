@@ -134,6 +134,7 @@ public class Logear extends HttpServlet {
 				request.getSession().setAttribute("inversionistas", inversionistas);
 				request.getSession().setAttribute("tiposValor", tiposValor);
 				request.getSession().setAttribute("tiposRentabilidad", tiposRentabilidad);
+				request.getSession().setAttribute("valores", valores);
 			} catch (SQLException e) {
 				System.out
 						.println("Error al ejecutar el query de obtener los nombres de los oferentes");
