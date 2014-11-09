@@ -298,7 +298,7 @@ ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
                             	<option>N/A</option>
                             	<% while(intermediarios.next()){ %>
                             	
-                            	<option><%=intermediarios.getString("nombre") %></option>
+                            	<option><%=intermediarios.getInt("identidad")+":"+intermediarios.getString("nombre") %></option>
                             	<% 	
                             	}
                             	 %>

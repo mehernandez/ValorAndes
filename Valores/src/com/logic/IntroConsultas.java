@@ -39,7 +39,7 @@ public class IntroConsultas extends HttpServlet {
 		Statement st = this.crearConexion(conn);
 		try {
 			ResultSet rs = st
-					.executeQuery("select nombre from intermediarios");
+					.executeQuery("select nombre, identidad from intermediarios");
 			request.setAttribute("intermediarios", rs);
 
 		} catch (SQLException e) {
