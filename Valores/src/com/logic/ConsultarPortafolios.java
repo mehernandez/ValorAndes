@@ -40,7 +40,8 @@ public class ConsultarPortafolios extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String tipoValor = request.getParameter("tipoValor");
+		String[] tipoValorx = request.getParameter("tipoValor").split(":");
+		String tipoValor = tipoValorx[0];
 		String cantidadValorS = request.getParameter("cantidadValor");
 		String resp = "bien";
 		
@@ -52,9 +53,10 @@ public class ConsultarPortafolios extends HttpServlet {
 			int cantidadValor=Integer.parseInt(cantidadValorS);
 			
 			ResultSet rs = st
-					.executeQuery("select * from (select * from (select distinct entidad as identidad from operaciones where monto >"+cantidadValor+") natural join "+ 
-"(select distinct identidad  from portafolio,Valores,tiposvalor where portafolio.idvalor=valores.idvalor and valores.tipovalor=tiposvalor.idtipovalor and tiposvalor.nombre='"+tipoValor+"')) "+ 
-"natural join portafolio");
+					.executeQuery("select * from (((select * from (select distinct entidad as identidad from operaciones where monto >"+cantidadValor+") natural join "+
+"(select distinct identidad  from portafolio,Valores where portafolio.idvalor=valores.idvalor and  valores.tipoValor="+tipoValor+")) "+ 
+"natural join (select identidad,portafolio.idvalor,nombre as valor,cantidad  from portafolio,valores where portafolio.idvalor = valores.idvalor)) "+
+"natural join (select * from(select identidad , nombre as entidad from oferentes) union (select identidad , nombre as entidad from inversionistas)))");
 			request.setAttribute("result", rs);
 			request.setAttribute("tipo", "consultarPortafolios");
 

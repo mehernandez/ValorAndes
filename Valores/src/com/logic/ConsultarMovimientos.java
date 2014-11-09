@@ -43,16 +43,20 @@ public class ConsultarMovimientos extends HttpServlet {
 
 		String fechainicial = request.getParameter("fechaInicial");
 		String fechaFinal = request.getParameter("fechaFinal");
-		String tipoValor = request.getParameter("tipoValor");
+		String[] tipoValorx = request.getParameter("tipoValor").split(":");
+		String tipoValor = tipoValorx[0];
 		String monto = request.getParameter("monto");
-		String idIntermediario = request.getParameter("idIntermediario");
+		String[] idIntermediariox = request.getParameter("idIntermediario").split(":");
+		String idIntermediario = idIntermediariox[0];
 		String incluir = request.getParameter("group1");
-		
+
 		//los que faltan
-		
-		String oferente = request.getParameter("oferente");
-		String inversionista = request.getParameter("inversionista");
-		
+
+		String[] oferentex = request.getParameter("oferente").split(":");
+		String oferente = oferentex[0];
+		String[] inversionistax = request.getParameter("inversionista").split(":");
+		String inversionista = inversionistax[0];
+
 
 		String where = " where 1=1 ";
 
@@ -64,14 +68,27 @@ public class ConsultarMovimientos extends HttpServlet {
 		Statement st = this.crearConexion(conn);
 		try {
 
-			if(!fechainicial.isEmpty() && !fechaFinal.isEmpty()){
+			if(!fechainicial.isEmpty() && !fechaFinal.isEmpty() && !(!oferente.equals("N/A") && !inversionista.equals("N/A"))){
 
-				if(!monto.isEmpty()){
-					int mont = Integer.parseInt(monto);
-				}
+
 
 				if(incluir.equals("no")){
 					operador = "<>";
+				}
+				if(!monto.equals("N/A")){
+					String[] montox = monto.split("-");
+					if(operador.equals("=")){
+						where += " and monto >="+montox[0]+" and monto <="+montox[1]+" ";
+					}
+					else{
+						where += " and (monto <"+montox[0]+" or monto >"+montox[1]+") ";	
+					}
+				}
+				if(!inversionista.equals("N/A")){
+					where += "and enti ="+inversionista+" ";
+				}
+				else if(!oferente.equals("N/A")){
+					where += "and enti ="+oferente+" ";
 				}
 				if(!tipoValor.isEmpty()){
 					where += " and tipVal"+operador+"'"+tipoValor+"' ";
@@ -80,17 +97,19 @@ public class ConsultarMovimientos extends HttpServlet {
 					where += " and monto"+operador+monto+" ";
 				}
 				if(!idIntermediario.isEmpty()){
-					where += "and intermediario"+operador+"'"+idIntermediario+"' ";
+					where += "and intermediario"+operador+idIntermediario+" ";
 				}
 
 
-				
+
 				ResultSet rs = st
-						.executeQuery("select * from (SELECT fecha,monto, intermediarios.nombre as intermediario ,tipoOperacion,numerovalores,"
-								+ "operaciones.tipovalor as tipval ,valores.nombre as valor, tiposRentabilidad.nombre as "+
-"tiporent , inversionistas.nombre as intermediario FROM OPERACIONES , VALORES , tiposrentabilidad,inversionistas,intermediarios "+
-								"where valor=idvalor and  tiporentabilidad = idtiporentabilidad and operaciones.entidad=inversionistas.identidad) "
-+ where + "and fecha between '"+fechainicial+"' and '"+fechaFinal+"'");
+						.executeQuery("select * from (SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores."
+								+ "tipoValor as tipval,valores.nombre as valor "+
+								", valores.tipoRentabilidad as tiporent , entidad as enti "+
+								"FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join "+
+								"(select * from ((select identidad as enti , nombre as entidad from oferentes) union "+
+								"(select identidad as enti , nombre as entidad from inversionistas))) "
+								+ where + "and fecha between '"+fechainicial+"' and '"+fechaFinal+"'");
 				request.setAttribute("result", rs);
 				request.setAttribute("tipo", "consultarMovimientos");
 				resp = "bien";

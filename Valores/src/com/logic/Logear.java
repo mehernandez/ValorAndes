@@ -93,32 +93,32 @@ public class Logear extends HttpServlet {
 			ArrayList valores = new ArrayList();
 			
 			try {
-				ResultSet rs = st.executeQuery("select nombre from oferentes");
+				ResultSet rs = st.executeQuery("select nombre,identidad from oferentes");
 
 				while (rs.next()) {
-					oferentes.add(rs.getString("nombre"));
+					oferentes.add(rs.getInt("identidad")+":"+rs.getString("nombre"));
 				}
 				ResultSet f = st
-						.executeQuery("select nombre from intermediarios");
+						.executeQuery("select nombre,identidad from intermediarios");
 				while (f.next()) {
-					intermediarios.add(f.getString("nombre"));
+					intermediarios.add(f.getInt("identidad")+":"+f.getString("nombre"));
 				}
 				ResultSet k = st
-						.executeQuery("select nombre from inversionistas");
+						.executeQuery("select nombre, identidad from inversionistas");
 				while (k.next()) {
-					inversionistas.add(k.getString("nombre"));
+					inversionistas.add(k.getInt("identidad")+":"+k.getString("nombre"));
 				}
 				
 				ResultSet h = st
-						.executeQuery("select nombre from tiposvalor");
+						.executeQuery("select nombre, idtipovalor from tiposvalor");
 				while (h.next()) {
-					tiposValor.add(h.getString("nombre"));
+					tiposValor.add(h.getInt("idTipoValor")+":"+h.getString("nombre"));
 				}
 
 				ResultSet l = st
-						.executeQuery("select nombre from tiposRentabilidad");
+						.executeQuery("select nombre,idTipoRentabilidad from tiposRentabilidad");
 				while (l.next()) {
-					tiposRentabilidad.add(l.getString("nombre"));
+					tiposRentabilidad.add(l.getInt("idTipoRentabilidad")+":"+l.getString("nombre"));
 				}
 				
 				ResultSet v = st

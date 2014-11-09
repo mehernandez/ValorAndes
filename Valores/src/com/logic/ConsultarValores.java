@@ -49,7 +49,10 @@ public class ConsultarValores extends HttpServlet {
 		Statement st = this.crearConexion(conn);
 		try {
 			ResultSet rs = st
-					.executeQuery("select * from (select distinct entidad as identidad from operaciones where valor ="+valor+") natural join portafolio");
+					.executeQuery("select * from ((select distinct entidad as identidad from operaciones where valor ="+valor+") natural join "+
+"(select identidad,portafolio.idvalor,nombre as valor,cantidad  from portafolio,valores where portafolio.idvalor = valores.idvalor)) "+
+"natural join (select * from(select identidad , nombre as entidad from oferentes) union "+
+"(select identidad , nombre as entidad from inversionistas))");
 			request.setAttribute("result", rs);
 			request.setAttribute("tipo", "consultarValores");
 
