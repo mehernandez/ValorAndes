@@ -15,6 +15,8 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 <!--  HEllo -->
 
 <% ResultSet intermediarios = (ResultSet)(request.getAttribute("intermediarios"));
+ArrayList oferentes=(ArrayList)(request.getSession().getAttribute("oferentes"));
+ArrayList inversionistas=(ArrayList)(request.getSession().getAttribute("inversionistas"));
 ArrayList tiposValor=(ArrayList)(request.getSession().getAttribute("tiposValor"));
 ArrayList tiposRentabilidad=(ArrayList)(request.getSession().getAttribute("tiposRentabilidad"));
 ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
@@ -303,6 +305,28 @@ ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
                             	}
                             	 %>
                             	</select >
+                            	   <br>
+                                 <h4> Inversionistas </h4>
+                            	<select class="form-control" name="idIntermediario">
+                            	<option>N/A</option>
+                            	<% for(int z=0;z<inversionistas.size();z++){ %>
+                            	
+                            	<option><%=inversionistas.get(z) %></option>
+                            	<% 	
+                            	}
+                            	 %>
+                            	</select >
+                            	   <br>
+                                 <h4> Oferentes </h4>
+                            	<select class="form-control" name="idIntermediario">
+                            	<option>N/A</option>
+                            	<% for(int z=0;z<oferentes.size();z++){ %>
+                            	
+                            	<option><%=oferentes.get(z) %></option>
+                            	<% 	
+                            	}
+                            	 %>
+                            	</select >
                                   <br>
                                   <h4> Tipo de Rentabilidad </h4>
                             	<select class="form-control" name="tiposRentabilidad">
@@ -430,5 +454,4 @@ ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
 </body>
 
 </html>
-                
                 
