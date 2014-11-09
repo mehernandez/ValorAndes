@@ -40,7 +40,9 @@ public class ConsultarValores extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String valor = request.getParameter("tipoValor");
+		String[] arr = (request.getParameter("tipoValor")).split(":");
+		String valor = arr[0];
+		
 		
 		// Aca se hace la logica
 		Connection conn = null;

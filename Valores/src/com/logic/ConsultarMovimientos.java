@@ -47,6 +47,12 @@ public class ConsultarMovimientos extends HttpServlet {
 		String monto = request.getParameter("monto");
 		String idIntermediario = request.getParameter("idIntermediario");
 		String incluir = request.getParameter("group1");
+		
+		//los que faltan
+		
+		String oferente = request.getParameter("oferente");
+		String inversionista = request.getParameter("inversionista");
+		
 
 		String where = " where 1=1 ";
 
