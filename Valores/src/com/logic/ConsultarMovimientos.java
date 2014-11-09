@@ -43,19 +43,20 @@ public class ConsultarMovimientos extends HttpServlet {
 
 		String fechainicial = request.getParameter("fechaInicial");
 		String fechaFinal = request.getParameter("fechaFinal");
-		String[] tipoValorx = request.getParameter("tipoValor").split(":");
-		String tipoValor = tipoValorx[0];
+		
+		
+		String tipoValor = request.getParameter("tipoValor");
 		String monto = request.getParameter("monto");
-		String[] idIntermediariox = request.getParameter("idIntermediario").split(":");
-		String idIntermediario = idIntermediariox[0];
+		
+		String idIntermediario = request.getParameter("idIntermediario");
 		String incluir = request.getParameter("group1");
 
 		//los que faltan
 
-		String[] oferentex = request.getParameter("oferente").split(":");
-		String oferente = oferentex[0];
-		String[] inversionistax = request.getParameter("inversionista").split(":");
-		String inversionista = inversionistax[0];
+		
+		String oferente = request.getParameter("oferente");
+		
+		String inversionista = request.getParameter("inversionista");
 
 
 		String where = " where 1=1 ";
@@ -85,19 +86,28 @@ public class ConsultarMovimientos extends HttpServlet {
 					}
 				}
 				if(!inversionista.equals("N/A")){
-					where += "and enti ="+inversionista+" ";
+					
+					String[] str = inversionista.split(":");
+					
+					where += "and enti "+operador+str[0]+" ";
 				}
 				else if(!oferente.equals("N/A")){
-					where += "and enti ="+oferente+" ";
+					
+					String[] str = oferente.split(":"); 
+					where += "and enti "+operador+str[0]+" ";
 				}
-				if(!tipoValor.isEmpty()){
-					where += " and tipVal"+operador+"'"+tipoValor+"' ";
+				if(!tipoValor.equals("N/A")){
+					
+					String[] str = tipoValor.split(":");
+					
+					
+					where += " and tipVal"+operador+str[0]+" ";
 				}
-				if(!monto.isEmpty()){
-					where += " and monto"+operador+monto+" ";
-				}
-				if(!idIntermediario.isEmpty()){
-					where += "and intermediario"+operador+idIntermediario+" ";
+				
+				if(!idIntermediario.equals("N/A")){
+					
+					String[] str = idIntermediario.split(":");
+					where += "and intermediario"+operador+str[0]+" ";
 				}
 
 

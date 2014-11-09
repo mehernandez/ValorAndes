@@ -307,7 +307,7 @@ ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
                             	</select >
                             	   <br>
                                  <h4> Inversionistas </h4>
-                            	<select class="form-control" name="idIntermediario">
+                            	<select class="form-control" name="inversionista">
                             	<option>N/A</option>
                             	<% for(int z=0;z<inversionistas.size();z++){ %>
                             	
@@ -318,7 +318,7 @@ ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
                             	</select >
                             	   <br>
                                  <h4> Oferentes </h4>
-                            	<select class="form-control" name="idIntermediario">
+                            	<select class="form-control" name="oferente">
                             	<option>N/A</option>
                             	<% for(int z=0;z<oferentes.size();z++){ %>
                             	
