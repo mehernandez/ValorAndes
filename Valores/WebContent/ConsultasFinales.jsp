@@ -376,7 +376,7 @@ ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
 		                            	</select >
 		                                  <br>
 		                           
-		                                  <h4> Cantidad del valor </h4>
+		                                  <h4> Monto </h4>
 		                            	<input type="text" class="form-control" name="cantidadValor" placeholder="N/A">
 		                                  <br> <br>   
 		
