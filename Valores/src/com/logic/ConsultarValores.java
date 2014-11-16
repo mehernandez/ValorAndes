@@ -48,11 +48,18 @@ public class ConsultarValores extends HttpServlet {
 		Connection conn = null;
 		Statement st = this.crearConexion(conn);
 		try {
+			
+			Long t1=System.currentTimeMillis();
+			
 			ResultSet rs = st
 					.executeQuery("select * from ((select distinct entidad as identidad from operaciones where valor ="+valor+") natural join "+
 "(select identidad,portafolio.idvalor,nombre as valor,cantidad  from portafolio,valores where portafolio.idvalor = valores.idvalor)) "+
 "natural join (select * from(select identidad , nombre as entidad from oferentes) union "+
 "(select identidad , nombre as entidad from inversionistas))");
+			
+			Long t2=System.currentTimeMillis();
+			System.out.println("TIEMPO CONSULTA VALORES::::::::2"+(t2-t1));
+			
 			request.setAttribute("result", rs);
 			request.setAttribute("tipo", "consultarValores");
 

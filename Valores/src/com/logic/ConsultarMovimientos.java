@@ -65,8 +65,6 @@ public class ConsultarMovimientos extends HttpServlet {
 
 		String resp = "mal";
 		// Aca se hace la logica
-		Connection conn = null;
-		Statement st = this.crearConexion(conn);
 		try {
 
 			if(!fechainicial.isEmpty() && !fechaFinal.isEmpty() && !(!oferente.equals("N/A") && !inversionista.equals("N/A"))){
@@ -109,17 +107,25 @@ public class ConsultarMovimientos extends HttpServlet {
 					String[] str = idIntermediario.split(":");
 					where += "and intermediario"+operador+str[0]+" ";
 				}
+				
+				Long t1=System.currentTimeMillis();
 
-
-
-				ResultSet rs = st
-						.executeQuery("select * from (SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores."
+				DBConnection db = new DBConnection();
+				
+				String query="select * from (SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores."
 								+ "tipoValor as tipval,valores.nombre as valor "+
 								", valores.tipoRentabilidad as tiporent , entidad as enti "+
 								"FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join "+
 								"(select * from ((select identidad as enti , nombre as entidad from oferentes) union "+
 								"(select identidad as enti , nombre as entidad from inversionistas))) "
-								+ where + "and fecha between '"+fechainicial+"' and '"+fechaFinal+"'");
+								+ where + "and fecha between '"+fechainicial+"' and '"+fechaFinal+"'";
+				
+				
+
+				ResultSet rs = db.ejecutar(query);
+				
+				Long t2=System.currentTimeMillis();
+				System.out.println("TIEMPO CONSULTA MOVIMIENTOS::::::::2"+(t2-t1));
 				request.setAttribute("result", rs);
 				request.setAttribute("tipo", "consultarMovimientos");
 				resp = "bien";
@@ -130,8 +136,6 @@ public class ConsultarMovimientos extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.cerrar(conn);
-
 		request.setAttribute("respuesta", resp);
 
 		String url = "/RespuestaConsultasFinales.jsp"; // relative url for display jsp
@@ -140,42 +144,6 @@ public class ConsultarMovimientos extends HttpServlet {
 		RequestDispatcher rd = sc.getRequestDispatcher(url);
 		rd.forward(request, response);
 
-	}
-
-
-	public Statement crearConexion(Connection conn) {
-
-		try {
-			Statement st = null;
-
-			Class.forName("oracle.jdbc.OracleDriver");
-			String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
-			String user = "ISIS2304161420";
-			String pass = "entraros66151";
-			conn = DriverManager.getConnection(dbURL, user, pass);
-			if (conn != null) {
-				return st = conn.createStatement();
-
-			} else {
-				System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
-				return null;
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public void cerrar(Connection conn) {
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
 
 }

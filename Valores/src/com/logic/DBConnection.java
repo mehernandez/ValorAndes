@@ -3,35 +3,66 @@ package com.logic;
 import java.sql.*;
 
 public class DBConnection {
+	
+	
 	private Connection conn;
+	private Statement st;
 
-	public static ResultSet ejecutar(String query) throws SQLException {
-		Connection conn = null;
-		ResultSet respuesta = null;
+	
+	public DBConnection(){
+		conn=null;
+	}
+	
+	public Statement crearConexion(Connection conn) {
+
 		try {
-			Statement statement = null;
+			Statement st = null;
 
 			Class.forName("oracle.jdbc.OracleDriver");
 			String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
-			String user = " ISIS2304121420";
-			String pass = "alpendesf04b0";
+			String user = "ISIS2304161420";
+			String pass = "entraros66151";
 			conn = DriverManager.getConnection(dbURL, user, pass);
 			if (conn != null) {
-				statement = conn.createStatement();
+				return st = conn.createStatement();
+
 			} else {
-				statement = null;
+				System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
+				return null;
 			}
-			System.out.println(conn == null);
-			respuesta = statement.executeQuery(query);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		conn.close();
+		return null;
+	}
+
+	public void cerrar(Connection conn) {
+		if (conn != null) {
+			try {
+				conn.close();
+				conn=null;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public ResultSet ejecutar(String query) throws SQLException {
+		st=crearConexion(conn);
+		ResultSet respuesta = null;
+		try {
+			respuesta = st.executeQuery(query);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		cerrar(conn);
 		return respuesta;
 	}
 
-	public static int actualizar(String query) throws SQLException {
+	public int actualizar(String query) throws SQLException {
 		Connection conn = null;
 		int respuesta = 0;
 		try {

@@ -52,11 +52,18 @@ public class ConsultarPortafolios extends HttpServlet {
 		try {
 			int cantidadValor=Integer.parseInt(cantidadValorS);
 			
+			Long t1=System.currentTimeMillis();
+			
 			ResultSet rs = st
 					.executeQuery("select * from (((select * from (select distinct entidad as identidad from operaciones where monto >"+cantidadValor+") natural join "+
 "(select distinct identidad  from portafolio,Valores where portafolio.idvalor=valores.idvalor and  valores.tipoValor="+tipoValor+")) "+ 
 "natural join (select identidad,portafolio.idvalor,nombre as valor,cantidad  from portafolio,valores where portafolio.idvalor = valores.idvalor)) "+
 "natural join (select * from(select identidad , nombre as entidad from oferentes) union (select identidad , nombre as entidad from inversionistas)))");
+			
+			Long t2=System.currentTimeMillis();
+			System.out.println("TIEMPO CONSULTA PORTAFOLIOS::::::::2"+(t2-t1));
+			
+			
 			request.setAttribute("result", rs);
 			request.setAttribute("tipo", "consultarPortafolios");
 
