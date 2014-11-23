@@ -52,9 +52,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 	<script type="text/javascript">
 	$(document).ready(function (){
 
-        var cantidad = 0;
-        var idValor = 1;
-        var tipoValor = 1;
+       
 
 		$( "#tabla-rec1" ).dataTable({
             "processing" : true,

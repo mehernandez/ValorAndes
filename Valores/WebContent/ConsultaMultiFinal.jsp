@@ -62,6 +62,7 @@ ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
        	function req1(){
 
         var str=JSON.stringify($("#form1").serializeArray());
+        $("#forms").hide();
            	
 		$( "#tabla-rec1" ).dataTable({
             "processing" : true,
@@ -292,10 +293,12 @@ ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
           	<!--  </div>  -->	
           </div>
           
-           <div id="page-wrapper">
+          	<div id="forms">
+           <div  id="page-wrapper">
 
             <div class="container-fluid">
 
+				
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
@@ -407,6 +410,7 @@ ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
                 
                 </div>
     
+                </div>
                 </div>
                 </div>
                 </div>
