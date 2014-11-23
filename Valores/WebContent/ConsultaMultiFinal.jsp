@@ -6,17 +6,21 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql"%>
 <!-- This is a directive space -->
 <%@ page import="java.util.*" %>
+<%@ page session="true" %>
+
 <% String login = (String)(request.getSession().getAttribute("login")) ;
-String tipo = (String)(request.getAttribute("tipo"));%>
-<% ResultSet result = (ResultSet)(request.getAttribute("result")); %>
-<% System.out.println(tipo); %>
+String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 
-
+<% ResultSet intermediarios = (ResultSet)(request.getAttribute("intermediarios"));
+ArrayList oferentes=(ArrayList)(request.getSession().getAttribute("oferentes"));
+ArrayList inversionistas=(ArrayList)(request.getSession().getAttribute("inversionistas"));
+ArrayList tiposValor=(ArrayList)(request.getSession().getAttribute("tiposValor"));
+ArrayList tiposRentabilidad=(ArrayList)(request.getSession().getAttribute("tiposRentabilidad"));
+ArrayList valorid=(ArrayList)(request.getSession().getAttribute("valores"));%>
 
 <head>
-<!--  HEllo -->
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -26,6 +30,7 @@ String tipo = (String)(request.getAttribute("tipo"));%>
 
 <title>Valores de los Andes</title>
 
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -38,16 +43,53 @@ String tipo = (String)(request.getAttribute("tipo"));%>
     <!-- Custom Fonts -->
     <link href="font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+   <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.5.1.css">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+	<script src="http://cdn.oesmith.co.uk/morris-0.5.1.min.js"></script>
+    <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-datepicker.js"></script>
+    <!-- Estilo data-Tables -->
+    <link href="css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+    <script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
 
 </head>
 
 <body>
+
+	<script type="text/javascript">
+
+		
+       	function req1(){
+
+        var str=JSON.stringify($("#form1").serializeArray());
+           	
+		$( "#tabla-rec1" ).dataTable({
+            "processing" : true,
+            "serverSide" : true,
+            "ajax": {
+                "url": "/Valores/ConsultaMultiClase.html",
+                "type": "POST",
+                "data" : { "table_name" : "req1","form" : str } 
+            },
+            "columns": [
+                { data : 'ENTI' },
+                { data : 'FECHA' },
+                { data : 'MONTO' },
+                { data : 'INTERMEDIARIO' },
+                { data : 'TIPOOPERACION' },
+                { data : 'NUMEROVALORES' },
+                { data : 'TIPVAL' },
+                { data : 'VALOR' },
+                { data : 'TIPORENT' },
+                { data : 'ENTIDAD' },
+            ]
+        });
+        
+       	}
+
+		
+	
+</script>
 
     <div id="wrapper">
 
@@ -145,9 +187,7 @@ String tipo = (String)(request.getAttribute("tipo"));%>
                         </li>
                     </ul>
                 </li>
-                <%if(login != null){
-                	if(login.equals("admin")){%>                
-                <li class="dropdown">               
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>  <%=login %>  <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
@@ -155,16 +195,6 @@ String tipo = (String)(request.getAttribute("tipo"));%>
                         </li>                                            
                     </ul>
                 </li>
-                <%}} else{%>
-                 <li class="dropdown">               
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>  login  <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="Login.jsp"><i class="fa fa-fw fa-user"></i> Login </a>
-                        </li>                                            
-                    </ul>
-                </li>
-                <%} %>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -231,131 +261,165 @@ String tipo = (String)(request.getAttribute("tipo"));%>
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Consultas ! <small>  </small>
+                            Bienvenido <%=login %> ! <small>Te echamos de menos </small>
                         </h1>
                        
                     </div>
                 </div>
 
-                <h2> Respuesta consulta </h2>
-   <!-- Respuesta consulta 1  -->
-   
-<% if(tipo.equals("consultarMovimientos")){ %>
-          <div class="col-lg-6">
-          	
-          	<div class="table-responsive">
-          		<table class="table table-hover table-striped">
-          			<thead>
-						<tr>
-							<th>Fecha</th>
-							<th>Monto</th>
-							<th>Intermediario</th>
-							<th>Tipo Operacion</th>
-							<th># Valores</th>
-							<th>Tipos Valores</th>
-							<th>Valor</th>
-							<th>Tipo Rentabilidad</th>
-							<th>Intermediario</th>
-							
+             <!-- Tabla con Valores disponibles en el momento  -->
 
-
-						</tr>
-          			</thead>	
-          			<tbody>
-          				<!-- Aqui hay que iterar -->
-          				<% while (result.next()){ %>
-						<tr>
-							<td><%=result.getString("fecha") %></td>
-							<td><%=result.getString("monto") %></td>	
-							<td><%=result.getString("intermediario") %></td>							
-							<td><%=result.getString("tipoOperacion") %></td>
-							<td><%=result.getString("numeroValores") %></td>
-							<td><%=result.getString("tipVal") %></td>
-							<td><%=result.getString("valor") %></td>
-							<td><%=result.getString("tipoRent") %></td>
-							<td><%=result.getString("intermediario") %></td>
-						
-							
-						</tr>
-						<%} %>
-						<!--                     -->
-          			</tbody>
-          		</table>	
-          	</div>	
+          <div class="col-lg-12">
+          	<h2> Valores Disponibles </h2>
+          	<!-- <div class="table-responsive"> -->
+          		<table class="table table-striped" id="tabla-rec1">
+                                <thead>
+                                    <tr>
+                                        <th>ID Entidad</th>
+										<th>Fecha</th>
+										<th>Monto</th>
+										<th>Intermediario</th>
+										<th>Tipo Operacion</th>
+										<th>Numero Valores</th>
+										<th>Tipo Valor</th>
+										<th>Valor</th>
+										<th>Tipo Rentabilidad</th>
+										<th>Entidad</th>
+                                    </tr>
+                                </thead>
+                  </table>
+                  
+          	<!--  </div>  -->	
           </div>
-                <!--                        -->
-<%} else if(tipo.equals("consultarPortafolios")){ %>
-                  <!-- Respuesta consulta 2  -->
+          
+           <div id="page-wrapper">
 
-          <div class="col-lg-6">
-          	
-          	<div class="table-responsive">
-          		<table class="table table-hover table-striped">
-          			<thead>
-						<tr>
-							<th>id Entidad</th>
-							<th>id Valor</th>
-							<th>Cantidad</th>
-							
+            <div class="container-fluid">
 
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Consultas Finales
+                        </h1>
+                       
+                    </div>
+                </div>
 
-						</tr>
-          			</thead>	
-          			<tbody>
-          				<!-- Aqui hay que iterar -->
-						<% while (result.next()){ %>
-						<tr>
-							<td><%=result.getString("idEntidad") %></td>
-							<td><%=result.getString("idValor") %></td>
-							<td><%=result.getString("cantidad") %></td>
-						</tr>
-						<%} %>
-						<!--                     -->
-          			</tbody>
-          		</table>	
-          	</div>	
-          </div>
-                <!--                        -->
-
-<% } else if(tipo.equals("consultarValores")){ %>
-                  <!-- Respuesta consulta 3  -->
-
-          <div class="col-lg-6">
-          	
-          	<div class="table-responsive">
-          		<table class="table table-hover table-striped">
-          			<thead>
-						<tr>
-							<th>id Entidad</th>	
-							<th>id Valor</th>
-							<th>Cantidad</th>					
-							
+          		<div class="row">
+                <div class="well col-md-4">
+                <h3>Consultar Movimientos</h3>
+                <form action="ConsultarMovimientos.html" id="form1" method="post"  onsubmit="req1();return false">
+              
+                            <div class="form-group input-group">
+                       
+                            	<input type="hidden" class="form-control" name="tipoConsulta" value="valores">
+                            		<!-- Rango de fechas -->
+	                            	<div class="row">
+			                            	<div class="col-md-5">
+			                            	<h4> Fecha Inicial </h4>
+			                            	<input type="text" class="form-control" name="fechaInicial" placeholder="DD/MM/AA" id="datepicker">
+			                            	</div>
+			                            	<div class="col-md-5">
+			                            	<h4> Fecha Final </h4>
+			                            	<input type="text" class="form-control" name="fechaFinal" placeholder="DD/MM/AA" id="datepicker">
+			                            	</div>
+			                        </div>
+                            	
+                            	 <!-- ///////////////////////////////////7 -->
+                            	
+                            	
+                         
 
 
-						</tr>
-          			</thead>	
-          			<tbody>
-          				<!-- Aqui hay que iterar -->
-						<% while (result.next()){ %>
-						<tr>
-							<td><%=result.getString("idEntidad") %></td>
-							<td><%=result.getString("idValor") %></td>
-							<td><%=result.getString("cantidad") %></td>		
-						</tr>
-						<%} %>
-						<!--                     -->
-          			</tbody>
-          		</table>	
-          	</div>	
-          </div>
-                <!--                        -->
-<%}%>
+
+                                <button type="submit" class="btn btn-primary btn-lg">Consultar</button>
+                                
+                            </div>
+                </form>
+                </div>
+                
+                
+                <div class=" col-md-8">
+                	<div class="row">
+		                 <div class="well col-md-4">
+		                <h3>Consultar Portafolios</h3>
+		                <form action="ConsultarPortafolios.html" method="post" onsubmit="req2()">
+		                            <div class="form-group input-group">
+		                            
+		                            	<input type="hidden" class="form-control" name="tipoConsulta" value="valores">
+		                            	<h4> Tipo de Valor </h4>
+		                            	<select class="form-control" name="tipoValor">
+		                            	<option>N/A</option>
+		                            	<% for(int z=0;z<tiposValor.size();z++){ %>
+                            	
+                            	<option><%=tiposValor.get(z) %></option>
+                            	<% 	
+                            	}
+                            	 %>
+		                            	</select >
+		                                  <br>
+		                           
+		                                  <h4> Monto </h4>
+		                            	<input type="text" class="form-control" name="cantidadValor" placeholder="N/A">
+		                                  <br> <br>   
+		
+		                               
+		
+		                                <button type="submit" class="btn btn-primary btn-lg">Consultar</button>
+		                                
+		                            </div>
+		                </form>
+		                </div>
+		                
+		                </div>
+		                
+		                <div class="row">
+		                
+		                 <div class="well col-md-4">
+		                 <h3>Consultar Valores</h3>
+		                <form action="ConsultarValores.html" method="post" onsubmit="req3()">
+		                            <div class="form-group input-group">
+		                            
+		                            	<input type="hidden" class="form-control" name="tipoConsulta" value="valores">
+		                            	<h4> Valor </h4>
+		                            	<select class="form-control" name="tipoValor">
+		                            	<option>N/A</option>
+		                            	<% for(int z=0;z<valorid.size();z++){ %>
+                            	
+                            	<option><%=valorid.get(z) %></option>
+                            	<% 	
+                            	}
+                            	 %>
+		                            	</select >
+		                                  <br><br>
+		                           
+		
+		                               
+		
+		                                <button type="submit" class="btn btn-primary btn-lg">Consultar</button>
+		                                
+		                            </div>
+		                </form>
+		                </div>
+		                
+		                 </div>
+                
+                </div>
     
+                </div>
+                </div>
+                </div>
+                <!--                        -->
+                </div>
+                </div>
+                </div>
+                
 
     <!-- /#wrapper -->
 
     <!-- jQuery Version 1.11.0 -->
-    <script src="js/jquery-1.11.0.js"></script>
+  
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>

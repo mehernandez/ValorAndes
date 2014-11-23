@@ -1,12 +1,15 @@
 package com.logic;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -14,6 +17,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * Servlet implementation class Logear
@@ -37,6 +44,45 @@ public class Logear extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		System.out.println("/////////////ESTA ACA ANTES DE EXTRAER Y DEL IF");
+		String tableName = request.getParameter("table_name");
+		int start = Integer.parseInt(request.getParameter("start")) + 1;
+		int length = Integer.parseInt(request.getParameter("length"));
+		int columnOrder = Integer.parseInt(request.getParameter("order[0][column]"));
+		String columnName = request.getParameter("columns[" + columnOrder + "][data]");
+		String tipo = request.getParameter("order[0][dir]");
+		String search = request.getParameter("search[value]");
+		if (tableName.equals("intermediarios")){
+			System.out.println("////////////ENTRO AL IF");
+//			Enumeration enums = request.getParameterNames();
+//			while(enums.hasMoreElements()){
+//				String paramName = (String) enums.nextElement();
+//				System.out.println(paramName + " - value : " + request.getParameter(paramName));
+//			}
+			ObjectMapper mapper = new ObjectMapper();
+			response.setContentType("application/json");
+			ArrayList<HashMap<String, String>> resultado = null;
+			int conteo=0;
+			int conteoSearch=0;
+			try {
+				resultado = darIntermediarios(start, length, columnName, tipo, search);
+				conteo = contarIntermediariosTotal();
+				conteoSearch = contarIntermediarios(search);
+				System.out.println("conteo " + conteo);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			DataTableObject dataTableObject = new DataTableObject();
+			dataTableObject.setAaData(resultado);
+			dataTableObject.setRecordsFiltered(conteoSearch);
+			dataTableObject.setRecordsTotal(conteo);
+			PrintWriter out = response.getWriter();
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			String json = gson.toJson(dataTableObject);
+			out.print(json);
+
+		}
 	}
 
 	/**
@@ -73,6 +119,7 @@ public class Logear extends HttpServlet {
 		this.cerrar(cox);
 
 		if (usuario.equals("admin") && clave.equals("admin")) {
+			//ACA ME INTERESA HACER MODIFICACIONES
 			url = "/HomeInversionista.jsp"; // relative url for display jsp page
 			request.getSession().setAttribute("login", usuario);
 			ya = true;
@@ -181,6 +228,118 @@ public class Logear extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public ArrayList<HashMap<String, String>> darIntermediarios(int start, int rows, String order, String tipo, String search) throws SQLException {
+		if(order == null){
+			order = "NOMBRE";
+		}
+		if(tipo == null){
+			tipo = "asc";
+		}
+		Connection conn=null;
+		try {
+			Class.forName("oracle.jdbc.OracleDriver");
+			String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
+			String user = "ISIS2304161420";
+			String pass = "entraros66151";
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			if (conn != null) {
+
+			} else {
+				System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
+				throw new Exception("La conexion es null");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String query = "select * from ( select a.*, ROWNUM rnum from (select idValor , nombre as nombreValor,precio,oferente,nombreOferente from valores natural join (select nombre as nombreOferente, identidad as oferente from oferentes ) ORDER BY " +  order +" " +  tipo + ") a where ROWNUM <= ? AND (NOMBREVALOR like '" + search +"%' OR NOMBREOFERENTE like '" + search +"%' )) where rnum  >= ?";
+		PreparedStatement st = conn.prepareStatement(query);
+		st.setInt(1, start + rows-1);
+		st.setInt(2, start);
+		ResultSet set = st.executeQuery();
+		ArrayList<HashMap<String, String>> resultado = darHola(set);
+		set.close();
+		st.close();
+		conn.close();
+		return resultado;	
+	}
+	
+	public int contarIntermediarios(String search) throws Exception{
+		Connection conn=null;
+		try {
+			Class.forName("oracle.jdbc.OracleDriver");
+			String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
+			String user = "ISIS2304161420";
+			String pass = "entraros66151";
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			if (conn != null) {
+
+			} else {
+				System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
+				throw new Exception("La conexion es null");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String query = "select count(*) as count from (select idValor , nombre as nombreValor,precio,oferente,nombreOferente from valores natural join (select nombre as nombreOferente, identidad as oferente from oferentes ) where NOMBREOFERENTE like '" + search +"%')";
+		PreparedStatement st = conn.prepareStatement(query);
+		ResultSet set = st.executeQuery();
+		set.next();
+		int resultado = set.getInt("COUNT");
+		set.close();
+		st.close();
+		conn.close();
+		return resultado;	
+	}
+	
+	public int contarIntermediariosTotal()throws Exception{
+		Connection conn=null;
+		try {
+			Class.forName("oracle.jdbc.OracleDriver");
+			String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
+			String user = "ISIS2304161420";
+			String pass = "entraros66151";
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			if (conn != null) {
+
+			} else {
+				System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
+				throw new Exception("La conexion es null");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String query = "select count(*) as count from valores natural join (select nombre as nombreOferente, identidad as oferente from oferentes )";
+		PreparedStatement st = conn.prepareStatement(query);
+		ResultSet set = st.executeQuery();
+		set.next();
+		int resultado = set.getInt("COUNT");
+		set.close();
+		st.close();
+		conn.close();
+		return resultado;	
+	}
+	
+	public static ArrayList<HashMap<String, String>> darHola(ResultSet resSet) throws SQLException{
+		ArrayList<HashMap<String, String>> finale = new ArrayList<HashMap<String,String>>();
+		int j = 0;
+		while(resSet.next()){
+			Object[] str = new Object[resSet.getMetaData().getColumnCount()];
+			HashMap<String, String> temp = new HashMap<String, String>();
+			for (int i = 1; i <= str.length; i++) {
+				String label = resSet.getMetaData().getColumnLabel(i);
+				String obj = resSet.getString(i);
+				temp.put(label, obj);
+			}
+			finale.add(temp);
+			j++;
+		}
+
+		return finale;
 	}
 
 }

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+ <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     
 <%@ page import="java.sql.*"%>
@@ -24,6 +24,7 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/signin.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
@@ -153,98 +154,20 @@
                     </ul>
                 </li>
             </ul>
-            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav side-nav">
-                    <li class="active">
-                        <a href="helloWorld.jsp"><i class="fa fa-fw fa-dashboard"></i> Consultas </a>
-                    </li>
-                    <!--  
-                    <li>
-                        <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
-                    </li>
-                    <li>
-                        <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
-                    </li>
-                    <li>
-                        <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Forms</a>
-                    </li>
-                    <li>
-                        <a href="bootstrap-elements.html"><i class="fa fa-fw fa-desktop"></i> Bootstrap Elements</a>
-                    </li>
-                    <li>
-                        <a href="bootstrap-grid.html"><i class="fa fa-fw fa-wrench"></i> Bootstrap Grid</a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dropdown <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="demo" class="collapse">
-                            <li>
-                                <a href="#">Dropdown Item</a>
-                            </li>
-                            <li>
-                                <a href="#">Dropdown Item</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="blank-page.html"><i class="fa fa-fw fa-file"></i> Blank Page</a>
-                    </li>  -->
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </nav>
+            
 
-        <div id="page-wrapper">
+       		<div class="container">
 
-            <div class="container-fluid">
+     	 <form action="Logear.html" method="post" class="form-signin" role="form">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputEmail" class="sr-only">Nombre de Usuario</label>
+        <input id="text" class="form-control" name="usuario" placeholder="Usuario" required="" autofocus="" type="text">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input id="inputPassword" class="form-control" placeholder="Password" required="" type="password" name="clave">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
 
-                <!-- Page Heading -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h1 class="page-header">
-                            Login <small>Para usuarios de Valores de los Andes</small>
-                        </h1>
-                       
-                    </div>
-                </div>
-                <!-- Login  -->
-
-
-                <form action="Logear.html" method="post" >
-                            <div class="form-group input-group">
-                            	
-                            	<div class="container">
-      						<!-- Example row of columns -->
-     							 <div class="row ">
-     							 	
-      								 <div class="col-md-4">
-                            	<h1> Usuario : </h1><br>
-                                <input type="text" class="form-control" name="usuario">  <br> <br>
-                                	</div>
-                                	<div class="col-md-4">
-                                <h1> Clave : </h1><br>
-                                <input type="password" class="form-control" name="clave">  <br> <br>
-									 </div>
-    
-                                </div>
-                                </div>
-                                </br>
-                     		 <div>
-                     		 
-                     		    <div class="row ">
-                     		    <div class="col-md-2">
-                     		 <button type="submit" class="btn btn-primary btn-lg">Login</button>
-                     		 </div>
-                     		 <div class="col-md-2">
-                                <a href="CrearCuenta.jsp"> Crear cuenta </a>
-                                </div>
-                                
-                            </div>
-                </form>
-                <%if (resp != null) {
-                  if (resp.equals("no")){%>
-                <h1> Contraseña y/o clave incorrectos </h1>
-                <%} }%>
+    </div>
 
 
     <!-- /#wrapper -->
@@ -265,3 +188,4 @@
 </html>
                 
                 
+ 

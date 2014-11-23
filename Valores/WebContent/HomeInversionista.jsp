@@ -23,6 +23,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 
 <title>Valores de los Andes</title>
 
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -35,16 +36,44 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
     <!-- Custom Fonts -->
     <link href="font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+   <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.5.1.css">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+	<script src="http://cdn.oesmith.co.uk/morris-0.5.1.min.js"></script>
+    <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-datepicker.js"></script>
+    <!-- Estilo data-Tables -->
+    <link href="css/plugins/dataTables.bootstrap.css" rel="stylesheet">
+    <script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
 
 </head>
 
 <body>
+
+	<script type="text/javascript">
+	$(document).ready(function (){
+
+        var cantidad = 0;
+        var idValor = 1;
+        var tipoValor = 1;
+
+		$( "#tabla-rec1" ).dataTable({
+            "processing" : true,
+            "serverSide" : true,
+            "ajax": {
+                "url": "/Valores/Logear.html",
+                "type": "GET",
+                "data" : { "table_name" : "intermediarios" } 
+            },
+            "columns": [
+                { data : 'IDVALOR' },
+                { data : 'NOMBREVALOR' },
+                { data : 'PRECIO' },
+                { data : 'OFERENTE' },
+                { data : 'NOMBREOFERENTE' },
+            ]
+        });
+	});
+</script>
 
     <div id="wrapper">
 
@@ -224,45 +253,32 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 
              <!-- Tabla con Valores disponibles en el momento  -->
 
-          <div class="col-lg-6">
+          <div class="col-lg-12">
           	<h2> Valores Disponibles </h2>
-          	<div class="table-responsive">
-          		<table class="table table-hover table-striped">
-          			<thead>
-						<tr>
-							<th>Nombre</th>
-							<th>Disponible</th>
-							<th>TipoValor</th>
-							<th>TipoRentabilidad</th>
-							<th>Comportamiento</th>
-							<th>Duración</th>
-							<th>EmpresaAsociada</th>
-
-
-						</tr>
-          			</thead>	
-          			<body>
-          				<!-- Aqui hay que iterar -->
-						<tr>
-							<td>Nom 1</td>
-							<td>Disp 1</td>
-							<td>TipVal 1</td>
-							<td>TipRent 1</td>
-							<td>Comport 1</td>
-							<td>Dura 1</td>
-							<td>Apple</td>
-						</tr>
-						<!--                     -->
-          			</body>
-          		</table>	
-          	</div>	
+          	<!-- <div class="table-responsive"> -->
+          		<table class="table table-striped" id="tabla-rec1">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Precio </th>
+                                        <th>Oferente</th>
+                                        <th>Nombre Oferente </th>
+                                    </tr>
+                                </thead>
+                            </table>
+          	<!--  </div>  -->	
           </div>
                 <!--                        -->
+                </div>
+                </div>
+                </div>
+                
 
     <!-- /#wrapper -->
 
     <!-- jQuery Version 1.11.0 -->
-    <script src="js/jquery-1.11.0.js"></script>
+  
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>

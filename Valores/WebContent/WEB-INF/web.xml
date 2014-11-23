@@ -103,6 +103,11 @@
   <servlet-name>IntroConsultas</servlet-name>
   <servlet-class>com.logic.IntroConsultas</servlet-class>
  </servlet>
+ <servlet>
+  <display-name>ConsultaMultiClase</display-name>
+  <servlet-name>ConsultaMultiClase</servlet-name>
+  <servlet-class>com.logic.ConsultaMultiClase</servlet-class>
+ </servlet>
  <servlet-mapping>
   <servlet-name>Prueba</servlet-name>
   <url-pattern>/Prueba</url-pattern>
@@ -182,6 +187,10 @@
  <servlet-mapping>
   <servlet-name>IntroConsultas</servlet-name>
   <url-pattern>/IntroConsultas.html</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>ConsultaMultiClase</servlet-name>
+  <url-pattern>/ConsultaMultiClase.html</url-pattern>
  </servlet-mapping>
  <session-config>
   <session-timeout>-1</session-timeout>

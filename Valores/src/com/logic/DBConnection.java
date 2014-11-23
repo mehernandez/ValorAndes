@@ -87,5 +87,13 @@ public class DBConnection {
 		conn.close();
 		return respuesta;
 	}
+	
+	public Statement getStatement(){
+		return st;
+	}
+	
+	public Connection getConnection(){
+		return conn;
+	}
 
 }

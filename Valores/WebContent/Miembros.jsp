@@ -162,6 +162,10 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                      <li>
                         <a href="IntroConsultas.html"><i class="fa fa-fw fa-edit"></i> Consultar Finales</a>
                     </li>
+                     <li>
+                        <a href="ConsultaMultiClase.html"><i class="fa fa-fw fa-edit"></i> Consultar Finales</a>
+                    </li>
+                  
                   
                     <%}else if(tipo.equals("INTERMEDIARIO")){ %>
                     <li>
