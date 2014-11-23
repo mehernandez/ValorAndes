@@ -1,7 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%> 
+    <!--JSTL core tags-->
+<%@ page import="java.sql.*"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql"%>
+<!-- This is a directive space -->
+<%@ page import="java.util.*" %>
+<%@ page session="true" %>
 <% String login = (String)(request.getSession().getAttribute("login")) ;
 String tipo = (String)(request.getSession().getAttribute("tipo"));%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<%ArrayList tiposValor = (ArrayList)(request.getSession().getAttribute("tiposValor"));
+ ArrayList tiposRentabilidad = (ArrayList)(request.getSession().getAttribute("tiposRentabilidad"));%>
+
 <head>
 
     <meta charset="utf-8">
@@ -10,7 +22,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin - Bootstrap Admin Template</title>
+<title>Valores de los Andes</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -91,7 +103,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                                         <img class="media-object" src="http://placehold.it/50x50" alt="">
                                     </span>
                                     <div class="media-body">
-                                        <h5 class="media-heading"><strong>John Smith</strong>
+                                        <h5 class="media-heading"><strong><%=login %></strong>
                                         </h5>
                                         <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
                                         <p>Lorem ipsum dolor sit amet, consectetur...</p>
@@ -131,17 +143,28 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                         </li>
                     </ul>
                 </li>
+                <% if (login != null){
+                	if(login.equals("admin")){%>
+                
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>  Login  <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>  <%=login %>  <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-user"></i> Login</a>
-                        </li>
-                        <li>
-                            <a href="CrearCuenta.jsp"><i class="fa fa-fw fa-envelope"></i> Crear cuenta</a>
-                        </li>                      
+                            <a href="helloWorld.jsp"><i class="fa fa-fw fa-user"></i> Logout </a>
+                        </li>                                            
                     </ul>
                 </li>
+                <%}}
+                else{%>               
+                 <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>  login  <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="Login.jsp"><i class="fa fa-fw fa-user"></i> Login </a>
+                        </li>                                            
+                    </ul>
+                </li>                               
+                <%} %>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -160,15 +183,11 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                         <a href="Miembros.jsp"><i class="fa fa-fw fa-edit"></i> Miembros</a>
                     </li>
                      <li>
-                        <a href="IntroConsultas.html"><i class="fa fa-fw fa-edit"></i> Consultar Finales</a>
-                    </li>
-                     <li>
-                        <a href="ConsultaMultiClase.html"><i class="fa fa-fw fa-edit"></i> Consultas con Cola</a>
+                        <a href="ConsultarMovimientos.jsp"><i class="fa fa-fw fa-edit"></i> Consultar Movimientos</a>
                     </li>
                     <li>
-                        <a href="ConsultasRangoFinal.jsp"><i class="fa fa-fw fa-edit"></i> Consultar Rango Cola</a>
+                        <a href="ConsultarPortafolios.jsp"><i class="fa fa-fw fa-edit"></i> Consultar Portafolios</a>
                     </li>
-                  
                     <%}else if(tipo.equals("INTERMEDIARIO")){ %>
                     <li>
                         <a href="Autorizar.html"><i class="fa fa-fw fa-table"></i> Autorizar</a>
@@ -204,8 +223,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                     </li>
                     <li>
                         <a href="blank-page.html"><i class="fa fa-fw fa-file"></i> Blank Page</a>
-                    </li>
-                    -->
+                    </li>  -->
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -219,99 +237,40 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Miembros <small>Participantes de la Bolsa</small>
+                            Consultas Con Cola! 
                         </h1>
-                        
+                       
                     </div>
                 </div>
-                <!-- /.row -->
 
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="alert alert-info alert-dismissable">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <i class="fa fa-info-circle"></i>  <strong>Aqui se pueden consultar todos los diferentes participantes de Valor Andes</strong> 
-                        </div>
-                    </div>
-                </div>
-                <!-- /.row -->
+              
 
-                <div class="row">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-comments fa-5x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge">26</div>
-                                        <div>Intermediarios </div>
-                                    </div>
-                                </div>
+              <!--  Consultar valores con mayor movimiento -->
+                <h2> Consultar valores con mayor movimiento en el sistema dentro de un rango de fechas</h2>
+
+                <form action="ConsultarRangoFinal.html" method="post" >
+                            <div class="form-group input-group">
+                            	<br>                            	
+                            	<input type="hidden" class="form-control" name="tipoConsulta" value="mayorMovimiento">
+                            	<h4> Desde : </h4>
+                            	<input type="text" class="form-control" name="fechaDesde">
+                            	<br>
+                            	<h4> Hasta : </h4>
+                            	<input type="text" class="form-control" name="fechaHasta">
+                            	<br>
+                                
+                          
+
+                                <button type="submit" class="btn btn-primary btn-lg">Consultar</button>
+                                
                             </div>
-                            <a href="Miembros.html?tipo=intermediario">
-                                <div class="panel-footer">
-                                    <span class="pull-left">Consultar!</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-green">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-tasks fa-5x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge">12</div>
-                                        <div>Oferentes</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <a href="Miembros.html?tipo=oferente">
-                                <div class="panel-footer">
-                                    <span class="pull-left">Consultar!</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-yellow">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <i class="fa fa-shopping-cart fa-5x"></i>
-                                    </div>
-                                    <div class="col-xs-9 text-right">
-                                        <div class="huge">124</div>
-                                        <div>Inversionistas</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <a href="Miembros.html?tipo=inversionista">
-                                <div class="panel-footer">
-                                    <span class="pull-left">Consultar!</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    
-                <!-- /.row -->
+                </form>
+             
+              <!--                  -->
 
-           
 
-        </div>
-        <!-- /#page-wrapper -->
+    
 
-    </div>
     <!-- /#wrapper -->
 
     <!-- jQuery Version 1.11.0 -->
@@ -328,3 +287,5 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 </body>
 
 </html>
+                
+                

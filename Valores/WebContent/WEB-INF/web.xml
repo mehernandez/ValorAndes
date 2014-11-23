@@ -108,6 +108,11 @@
   <servlet-name>ConsultaMultiClase</servlet-name>
   <servlet-class>com.logic.ConsultaMultiClase</servlet-class>
  </servlet>
+ <servlet>
+  <display-name>ConsultarRangoFinal</display-name>
+  <servlet-name>ConsultarRangoFinal</servlet-name>
+  <servlet-class>com.logic.ConsultarRangoFinal</servlet-class>
+ </servlet>
  <servlet-mapping>
   <servlet-name>Prueba</servlet-name>
   <url-pattern>/Prueba</url-pattern>
@@ -191,6 +196,10 @@
  <servlet-mapping>
   <servlet-name>ConsultaMultiClase</servlet-name>
   <url-pattern>/ConsultaMultiClase.html</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>ConsultarRangoFinal</servlet-name>
+  <url-pattern>/ConsultarRangoFinal.html</url-pattern>
  </servlet-mapping>
  <session-config>
   <session-timeout>-1</session-timeout>
