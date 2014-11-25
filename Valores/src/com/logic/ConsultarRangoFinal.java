@@ -16,11 +16,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 /**
  * Servlet implementation class ConsultarRangoFinal
  */
 public class ConsultarRangoFinal extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private Conector conector;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -88,7 +94,31 @@ public class ConsultarRangoFinal extends HttpServlet {
 			}
 			this.cerrar(conn);
 
+			JsonObject json = new JsonObject();
+			
+			json.addProperty("method", "Top20");
+			json.addProperty("inicial", fechaDesde);
+			json.addProperty("fin", fechaHasta);
+			
+			Gson gson = new GsonBuilder().create();
+			
+			String j = gson.toJson(json);
+			
+			
+			//
+			String resp = conector.preguntar(j);
+			//
+			
+			JsonParser jsonParser = new JsonParser();
+			JsonObject fullJson = jsonParser.parse(resp).getAsJsonObject();
+			
+			request.setAttribute("tabla2", fullJson);
+			
 		}
+		
+		
+		
+		
 		
 		String url = "/RespuestaRangoFinal.jsp"; // relative url for display jsp
 		// page

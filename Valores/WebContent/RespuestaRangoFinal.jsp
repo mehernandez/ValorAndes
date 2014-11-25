@@ -6,10 +6,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql"%>
 <!-- This is a directive space -->
 <%@ page import="java.util.*" %>
+<%@ page import="com.google.gson.JsonObject" %>
 <% String login = (String)(request.getSession().getAttribute("login")) ;
 String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 <% String tipoConsulta = request.getParameter("tipoConsulta"); %>
-<% ResultSet result = (ResultSet)(request.getAttribute("result")); %>
+<% ResultSet result = (ResultSet)(request.getAttribute("result")); 
+JsonObject tabla2 = (JsonObject)(request.getAttribute("tabla2"));%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 
@@ -234,7 +236,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                     </div>
                 </div>
 
-                <h2> Respuesta consulta </h2>
+                <h2> Respuesta consulta Medallo </h2>
    <!-- Respuesta consulta 1  -->
 
 
@@ -265,6 +267,42 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 							<td><%=result.getString("negociado") %></td>
 						</tr>
 						<%} %>
+						<!--                     -->
+          			</tbody>
+          		</table>	
+          	</div>	
+          </div>
+                <!--                        -->
+
+                <!--                        -->
+                
+                <h2> Respuesta consulta ValorAndes </h2>
+   <!-- Respuesta consulta 1  -->
+
+
+          <div class="col-lg-6">
+          	
+          	<div class="table-responsive">
+          		<table class="table table-hover table-striped">
+          			<thead>
+						<tr>
+							<th>id Valor</th>	
+							<th>Valor</th>
+							<th>Tipo Rentabilidad</th>							
+							<th>Costo Promedio</th>
+							<th>Cantidad de veces negociado</th>
+							
+
+
+						</tr>
+          			</thead>	
+          			<tbody>
+          				<!-- Aqui hay que iterar -->
+						
+						<tr>
+					
+						</tr>
+						
 						<!--                     -->
           			</tbody>
           		</table>	

@@ -22,13 +22,15 @@ import com.JSON.JSONArray;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 /**
  * Servlet implementation class ConsultaMultiClase
  */
 public class ConsultaMultiClase extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	private Conector conector;
+    
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -66,6 +68,14 @@ public class ConsultaMultiClase extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		try{
+			
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		
 		String tableName = request.getParameter("table_name");
 		
 		int start = Integer.parseInt(request.getParameter("start")) + 1;
@@ -90,6 +100,9 @@ public class ConsultaMultiClase extends HttpServlet {
 			
 			String fechaInicial=obj.getJSONObject(1).getString("value");
 			String fechaFinal=obj.getJSONObject(2).getString("value");
+			String bolsa = obj.getJSONObject(3).getString("value");
+			
+			if(bolsa.equals("medallo")){
 			
 		System.out.println("//////////////////FI: "+fechaInicial+" FF: "+fechaFinal);
 			
@@ -115,7 +128,44 @@ public class ConsultaMultiClase extends HttpServlet {
 			PrintWriter out = response.getWriter();
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			String json = gson.toJson(dataTableObject);
+			System.out.println(json);
 			out.print(json);
+			}
+			
+			else{
+				
+				System.out.println("//////////////////FI: "+fechaInicial+" FF: "+fechaFinal);
+				
+				System.out.println("ESTA ES LA INFO:      "+data);
+				
+				response.setContentType("application/json");
+				
+				PrintWriter out = response.getWriter();
+				JsonObject json = new JsonObject();
+				json.addProperty("method", "darValores");
+				json.addProperty("start", start);
+				json.addProperty("length", length);
+				json.addProperty("columnOrder", columnOrder);
+				json.addProperty("columnName", columnName);
+				json.addProperty("tipo", tipo);
+				json.addProperty("search", search);
+				json.addProperty("inicio", fechaInicial);
+				json.addProperty("fin", fechaFinal);
+				
+				
+				Gson gson = new GsonBuilder().create();
+				
+				String j = gson.toJson(json);
+				
+				
+				//
+				String resp = conector.preguntar(j);
+				//
+				
+				System.out.println(resp);
+				out.print(resp);
+				
+			}
 
 		} 
 	}
@@ -208,11 +258,12 @@ public class ConsultaMultiClase extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String query = "select * from ( select a.*, ROWNUM rnum from (select * from ((SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores.tipoValor as tipval,valores.nombre as valor, valores.tipoRentabilidad as tiporent , entidad as enti FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join (select * from (select identidad as enti , nombre as entidad from oferentes) union (select identidad as enti , nombre as entidad from inversionistas))) WHERE fecha between '"+fechaInicial+"' and '"+fechaFinal+"' ORDER BY " +  order +" " +  tipo + ") a where ROWNUM <= ? AND (VALOR like '" + search +"%' OR ENTIDAD like '" + search +"%' )) where rnum  >= ?";
+		String query = "select fecha, monto as cantidad , tipooperacion as tipo_mercado , valor as nombre_valor,tipval as tipo_valor, entidad as nombre_usuario, intermediario as nombre_corredor from ( select a.*, ROWNUM rnum from (select * from ((SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores.tipoValor as tipval,valores.nombre as valor, valores.tipoRentabilidad as tiporent , entidad as enti FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join (select * from (select identidad as enti , nombre as entidad from oferentes) union (select identidad as enti , nombre as entidad from inversionistas))) WHERE fecha between '"+fechaInicial+"' and '"+fechaFinal+"' ORDER BY " +  order +" " +  tipo + ") a where ROWNUM <= ? AND (VALOR like '" + search +"%' OR ENTIDAD like '" + search +"%' )) where rnum  >= ?";
 		PreparedStatement st = conn.prepareStatement(query);
 		st.setInt(1, start + rows-1);
 		st.setInt(2, start);
 		ResultSet set = st.executeQuery();
+		System.err.println("Ejecuto el query perro");
 		ArrayList<HashMap<String, String>> resultado = darHola(set);
 		set.close();
 		st.close();

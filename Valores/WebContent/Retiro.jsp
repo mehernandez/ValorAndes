@@ -7,8 +7,11 @@
 <!-- This is a directive space -->
 <%@ page import="java.util.*" %>
 <%@ page session="true" %>
+<%@ page import="com.google.gson.JsonObject" %>
 <% String login = (String)(request.getSession().getAttribute("login")) ;
-String tipo = (String)(request.getSession().getAttribute("tipo"));%><% ResultSet result = (ResultSet)(request.getAttribute("result")); %>
+String tipo = (String)(request.getSession().getAttribute("tipo"));%>
+<% ResultSet result = (ResultSet)(request.getAttribute("result"));
+JsonObject externos = (JsonObject)(request.getAttribute("externos"));%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 
@@ -268,6 +271,8 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%><% ResultSet
                             </div>
                 </form>
               <!--                  -->
+              
+              
 
              
 

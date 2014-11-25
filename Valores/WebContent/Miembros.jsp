@@ -163,7 +163,7 @@ String tipo = (String)(request.getSession().getAttribute("tipo"));%>
                         <a href="IntroConsultas.html"><i class="fa fa-fw fa-edit"></i> Consultar Finales</a>
                     </li>
                      <li>
-                        <a href="ConsultaMultiClase.html"><i class="fa fa-fw fa-edit"></i> Consultas con Cola</a>
+                        <a href="ConsultaMultiFinal.jsp"><i class="fa fa-fw fa-edit"></i> Consultas con Cola</a>
                     </li>
                     <li>
                         <a href="ConsultasRangoFinal.jsp"><i class="fa fa-fw fa-edit"></i> Consultar Rango Cola</a>

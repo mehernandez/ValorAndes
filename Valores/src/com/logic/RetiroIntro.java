@@ -14,11 +14,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 /**
  * Servlet implementation class RetiroIntro
  */
 public class RetiroIntro extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	Conector conector;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -48,6 +54,19 @@ public class RetiroIntro extends HttpServlet {
 			e.printStackTrace();
 		}
 		this.cerrar(conn);
+		
+		JsonObject json = new JsonObject();
+		
+		json.addProperty("method", "darIntermediarios");
+		
+		String j = new GsonBuilder().create().toJson(json);
+		
+		String resp = conector.preguntar(j);
+		
+		JsonParser jsonParser = new JsonParser();
+		JsonObject fullJson = jsonParser.parse(resp).getAsJsonObject();
+		
+		request.setAttribute("externos", fullJson);
 
 		String url = "/Retiro.jsp"; // relative url for display jsp page
 		ServletContext sc = getServletContext();

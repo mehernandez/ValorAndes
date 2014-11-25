@@ -14,11 +14,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
 /**
  * Servlet implementation class EliminarIntermediario
  */
 public class EliminarIntermediario extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private Conector conector;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -164,6 +169,20 @@ public class EliminarIntermediario extends HttpServlet {
 				if (h == 1 && b == 1 && k == 1) {
                     conn.commit();
 					resp = "si";
+					
+					// TODO se envia mensaje a la cola 
+					
+					JsonObject json = new JsonObject();
+					
+					json.addProperty("method", "Retirar");
+					json.addProperty("id", idIntermediario);
+					
+					String j = new GsonBuilder().create().toJson(json);
+					
+					conector.preguntar(j);
+										
+					//
+					
 				} else {
 					conn.rollback();
 				}
