@@ -16,22 +16,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class Conector extends Thread{
-
-
 	
-	public final static String NOMBRE = "medallo";
-	
-	private static Conector instancia = null;
+	public final static String NOMBRE = "VALORANDES";
 	
 	/**
 	 * La direccion del servidor
 	 */
-	public final static String HOST = "54.69.26.63";
+	public final static String HOST = "157.253.250.89";
 
 	/**
 	 * El puerto a la conexion de pregunta
@@ -84,7 +84,17 @@ public class Conector extends Thread{
 	 * El lector del sistema 
 	 */
 	private BufferedReader stdInRespuesta;
+	
+	/**
+	 * La instancia del conector
+	 */
+	private static Conector instancia = null;
 
+	/**
+	 * Las clases que escuchan el evento
+	 */
+	private List _listeners = new ArrayList();
+	
 	//-----------------------------------------------------------
 	// CONSTRUCTOR
 	//-----------------------------------------------------------
@@ -156,9 +166,25 @@ public class Conector extends Thread{
 				if(params[0].equals("ERROR")){
 					//System.out.println("No hay preguntas");
 				}else{
-					System.out.println(params[0]);
+					System.out.println("Pregunta recibida: " + params[0]);
 					//Atender pregunta!!
 //					String resp = Dao.pregunta(params[0]);
+					
+					String par = params[0];
+					
+					JsonParser jsonParser = new JsonParser();
+					JsonObject fullJson = jsonParser.parse(par).getAsJsonObject();
+					
+					String tipo = fullJson.get("method").toString();
+					
+					System.out.println(tipo);
+					
+					if(tipo.equals("Top20")){
+						this.retornarTop20(fullJson.get("fechaInicio").toString(), fullJson.get("fin").toString());
+					}
+					
+					//String temp = "{\"recordsTotal\": 200,\"recordsFiltered\": 20,\"data\": [{\"NOMBRE\": \"Certificado44\",\"CANTIDAD\": \"2\",\"PROMEDIO\": \"259.34\"}],\"draw\":0}";
+					//enviarRespuesta(temp);
 //					enviarRespuesta(resp);
 				}
 				closeConnectionPregunta();
@@ -184,7 +210,8 @@ public class Conector extends Thread{
 				}else{
 					//Atender respuesta!!
 					System.out.println("Respuesta: "+ params[0]);
-					enviarRespuesta("For trying to reach the things that i cant see");
+					//enviarRespuesta("For trying to reach the things that i cant see");
+					fireEvent(params[0]);
 				}
 				closeConnectionRespuesta();
 				
@@ -289,7 +316,7 @@ public class Conector extends Thread{
 		socketRespuesta.close();
 		outRespuesta.close();
 		inRespuesta.close();
-		stdInRespuesta.close();
+		stdInRespuesta.close(); 
 		
 		System.out.println("Conexion a socket respuesta cerrada -stateless-");
 		
@@ -317,236 +344,454 @@ public class Conector extends Thread{
 		
 		closeConnectionRespuesta();
 	}
+	
+	//-----------------------------------------------------------
+	// EVENTOS
+	//-----------------------------------------------------------
+
+	public synchronized void addEventListener(IEscuchadorEventos listener)  {
+		_listeners.add(listener);
+	}
+	
+	public synchronized void removeEventListener(IEscuchadorEventos listener)   {
+		_listeners.remove(listener);
+	}
+	
+	private synchronized void fireEvent(String hola) {
+	    MiEvento event = new MiEvento(this, hola);
+	    Iterator i = _listeners.iterator();
+	    while(i.hasNext())  {
+	      ((IEscuchadorEventos) i.next()).manejarEvento(event);
+	    }
+	  }
+	
+	//-----------------------------------------------------------
+	// MAIN
+	//-----------------------------------------------------------
 
 	public static void main(String[] args) {
 		try{
 			Conector nicky = new Conector();
-			nicky.start();
-//			nicky.sleep(10000);
-//			nicky.enviarPregunta("Am I Wrong?");
+			//nicky.sleep(10000);
+			//String temp = "{\"recordsTotal\": 200,\"recordsFiltered\": 20,\"data\": [{\"NOMBRE\": \"Certificado44\",\"CANTIDAD\": \"2\",\"PROMEDIO\": \"259.34\"}],\"draw\":0}";
+			//nicky.enviarRespuesta(temp);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		//nicky.start();
 	}
 	
+	
 	public String preguntar
+
 	(String pre){
-		
-		// TODO
-		return pre;
+
+
+	// TODO
+
+	return pre;
+
 	}
-	
+
+
 	public void responder(String resp){
-	// TODO	
+
+	// TODO
+
 	}
 
 
-public void retornarTop20(String fechaDesde , String fechaHasta){
-	
+
+
+
+	public void retornarTop20(String fechaDesde , String fechaHasta) throws Exception{
+
+
 	Connection con =  DAO.conectar();
-	
+
+
 	try {
-		Statement st = con.createStatement();
-	
-	
+
+	Statement st = con.createStatement();
+
+
+
 	String where = " ";
 
-	if (!fechaDesde.isEmpty() && !fechaHasta.isEmpty()) {
-		try {
-			Date d = new SimpleDateFormat("dd/MM/YYYY")
-					.parse(fechaDesde.trim());
-			Date x = new SimpleDateFormat("dd/MM/YYYY")
-					.parse(fechaHasta.trim());
 
-			where += " AND fecha BETWEEN '" + fechaDesde + "' AND '"
-					+ fechaHasta + "' ";
-		} catch (Exception e) {
-			// error en escritura de la fecha
-		}
-		
-		
+
+	if (!fechaDesde.isEmpty() && !fechaHasta.isEmpty()) {
+
+	try {
+
+	Date d = new SimpleDateFormat("dd/MM/YYYY")
+
+	.parse(fechaDesde.trim());
+
+	Date x = new SimpleDateFormat("dd/MM/YYYY")
+
+	.parse(fechaHasta.trim());
+
+
+
+	where += " AND fecha BETWEEN '" + fechaDesde + "' AND '"
+
+	+ fechaHasta + "' ";
+
+	} catch (Exception e) {
+
+	// error en escritura de la fecha
 
 	}
 
-	
-	
-		ResultSet rs = st
-				.executeQuery("select * from(select idvalor,valor,tiporentabilidad, count(idvalor) as negociado,avg(preciovalor) as costopromedio  from( select valores.idvalor, "
-						+ "valores.nombre as valor,preciovalor ,tiposrentabilidad.nombre as tiporentabilidad "
-						+ "from operaciones,valores,tiposrentabilidad where operaciones.valor=idvalor and tiposrentabilidad.IDTIPORENTABILIDAD=valores.TIPORENTABILIDAD "
-						+ where
-						+ ") group by idvalor, valor,tiporentabilidad) where rownum <=20 order by negociado desc,idvalor,valor ");
-		
-		ArrayList<HashMap<String, String>> result = darHola(rs);
-		
-		String json = darJson(result, 0, 0);
 
-		responder(json);
+
+
+
+	}
+
+
+
+
+
+	ResultSet rs = st
+
+	.executeQuery("select * from(select idvalor,valor,tiporentabilidad, count(idvalor) as negociado,avg(preciovalor) as costopromedio  from( select valores.idvalor, "
+
+	+ "valores.nombre as valor,preciovalor ,tiposrentabilidad.nombre as tiporentabilidad "
+
+	+ "from operaciones,valores,tiposrentabilidad where operaciones.valor=idvalor and tiposrentabilidad.IDTIPORENTABILIDAD=valores.TIPORENTABILIDAD "
+
+	+ where
+
+	+ ") group by idvalor, valor,tiporentabilidad) where rownum <=20 order by negociado desc,idvalor,valor ");
+
+
+	ArrayList<HashMap<String, String>> result = darHola(rs);
+
+
+	String json = darJson(result, 0, 0);
+
+
+    this.enviarRespuesta(json);
+	responder(json);
+
+
 
 	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+
+	// TODO Auto-generated catch block
+
+	e.printStackTrace();
+
 	}
+
 	DAO.cerrar(con);
 
-}
 
-public void darConsultaMovimientos(String fechaInicial , String fechaFinal, int start, int length,int columnOrder,
-		String columnName,String tipo , String search){
-	
-	ArrayList<HashMap<String, String>> resultado = null;
-	int conteo=0;
-	int conteoSearch=0;
-	try {
-		resultado = darMovimientos(start, length, columnName, tipo, search,fechaInicial,fechaFinal);
-		conteo = contarMovimientosTotal(fechaInicial,fechaFinal);
-		conteoSearch = contarMovimientos(search,fechaInicial,fechaFinal);
-		System.out.println("conteo " + conteo);
-	} catch (Exception e) {
-		e.printStackTrace();
+
 	}
 
+
+
+	public void darConsultaMovimientos(String fechaInicial , String fechaFinal, int start, int length,int columnOrder,
+
+	String columnName,String tipo , String search){
+
+
+	ArrayList<HashMap<String, String>> resultado = null;
+
+	int conteo=0;
+
+	int conteoSearch=0;
+
+	try {
+
+	resultado = darMovimientos(start, length, columnName, tipo, search,fechaInicial,fechaFinal);
+
+	conteo = contarMovimientosTotal(fechaInicial,fechaFinal);
+
+	conteoSearch = contarMovimientos(search,fechaInicial,fechaFinal);
+
+	System.out.println("conteo " + conteo);
+
+	} catch (Exception e) {
+
+	e.printStackTrace();
+
+	}
+
+
+
 	DataTableObject dataTableObject = new DataTableObject();
+
 	dataTableObject.setAaData(resultado);
+
 	dataTableObject.setRecordsFiltered(conteoSearch);
+
+	dataTableObject.setRecordsTotal(conteo);
+
+
+
+	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+	String json = gson.toJson(dataTableObject);
+
+
+	responder(json);
+
+	}
+
+
+
+
+
+	public static ArrayList<HashMap<String, String>> darHola(ResultSet resSet) throws SQLException{
+
+	ArrayList<HashMap<String, String>> finale = new ArrayList<HashMap<String,String>>();
+
+	int j = 0;
+
+	while(resSet.next()){
+
+	Object[] str = new Object[resSet.getMetaData().getColumnCount()];
+
+	HashMap<String, String> temp = new HashMap<String, String>();
+
+	for (int i = 1; i <= str.length; i++) {
+
+	String label = resSet.getMetaData().getColumnLabel(i);
+
+	String obj = resSet.getString(i);
+
+	temp.put(label, obj);
+
+	}
+
+	finale.add(temp);
+
+	j++;
+
+	}
+
+
+
+	return finale;
+
+	}
+
+
+
+	public String darJson(ArrayList<HashMap<String, String>> resultado,int conteo, int conteoSearch){
+
+
+	DataTableObject dataTableObject = new DataTableObject();
+
+	dataTableObject.setAaData(resultado);
+
+	dataTableObject.setRecordsFiltered(conteoSearch);
+
 	dataTableObject.setRecordsTotal(conteo);
 
 	Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	String json = gson.toJson(dataTableObject);
-	
-	responder(json);
-}
 
+	return gson.toJson(dataTableObject);
 
-public static ArrayList<HashMap<String, String>> darHola(ResultSet resSet) throws SQLException{
-	ArrayList<HashMap<String, String>> finale = new ArrayList<HashMap<String,String>>();
-	int j = 0;
-	while(resSet.next()){
-		Object[] str = new Object[resSet.getMetaData().getColumnCount()];
-		HashMap<String, String> temp = new HashMap<String, String>();
-		for (int i = 1; i <= str.length; i++) {
-			String label = resSet.getMetaData().getColumnLabel(i);
-			String obj = resSet.getString(i);
-			temp.put(label, obj);
-		}
-		finale.add(temp);
-		j++;
 	}
 
-	return finale;
-}
-
-public String darJson(ArrayList<HashMap<String, String>> resultado,int conteo, int conteoSearch){
-	
-DataTableObject dataTableObject = new DataTableObject();
-dataTableObject.setAaData(resultado);
-dataTableObject.setRecordsFiltered(conteoSearch);
-dataTableObject.setRecordsTotal(conteo);
-Gson gson = new GsonBuilder().setPrettyPrinting().create();
-return gson.toJson(dataTableObject);
-}
 
 
-private int contarMovimientos(String search,String fechaInicial,String fechaFinal) throws SQLException {
+
+
+	private int contarMovimientos(String search,String fechaInicial,String fechaFinal) throws SQLException {
+
 	Connection conn=null;
-	try {
-		Class.forName("oracle.jdbc.OracleDriver");
-		String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
-		String user = "ISIS2304161420";
-		String pass = "entraros66151";
-		conn = DriverManager.getConnection(dbURL, user, pass);
-		if (conn != null) {
 
-		} else {
-			System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
-			throw new Exception("La conexion es null");
-		}
+	try {
+
+	Class.forName("oracle.jdbc.OracleDriver");
+
+	String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
+
+	String user = "ISIS2304161420";
+
+	String pass = "entraros66151";
+
+	conn = DriverManager.getConnection(dbURL, user, pass);
+
+	if (conn != null) {
+
+
+
+	} else {
+
+	System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
+
+	throw new Exception("La conexion es null");
+
+	}
+
+
 
 	} catch (Exception e) {
-		e.printStackTrace();
+
+	e.printStackTrace();
+
 	}
+
 	String query = "select count(*) as count from (select * from ((SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores.tipoValor as tipval,valores.nombre as valor, valores.tipoRentabilidad as tiporent , entidad as enti FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join (select * from (select identidad as enti , nombre as entidad from oferentes) union (select identidad as enti , nombre as entidad from inversionistas))) WHERE fecha between '"+fechaInicial+"' and '"+fechaFinal+"') where VALOR like '" + search +"%' OR ENTIDAD like '" + search +"%'";
+
 	PreparedStatement st = conn.prepareStatement(query);
+
 	ResultSet set = st.executeQuery();
+
 	set.next();
+
 	int resultado = set.getInt("COUNT");
+
 	set.close();
+
 	st.close();
+
 	conn.close();
-	return resultado;	
-}
 
-private int contarMovimientosTotal(String fechaInicial,String fechaFinal) throws SQLException {
+	return resultado;
+
+	}
+
+
+
+	private int contarMovimientosTotal(String fechaInicial,String fechaFinal) throws SQLException {
+
 	Connection conn=null;
-	try {
-		Class.forName("oracle.jdbc.OracleDriver");
-		String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
-		String user = "ISIS2304161420";
-		String pass = "entraros66151";
-		conn = DriverManager.getConnection(dbURL, user, pass);
-		if (conn != null) {
 
-		} else {
-			System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
-			throw new Exception("La conexion es null");
-		}
+	try {
+
+	Class.forName("oracle.jdbc.OracleDriver");
+
+	String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
+
+	String user = "ISIS2304161420";
+
+	String pass = "entraros66151";
+
+	conn = DriverManager.getConnection(dbURL, user, pass);
+
+	if (conn != null) {
+
+
+
+	} else {
+
+	System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
+
+	throw new Exception("La conexion es null");
+
+	}
+
+
 
 	} catch (Exception e) {
-		e.printStackTrace();
+
+	e.printStackTrace();
+
 	}
+
 	String query = "select count(*) as count from (select * from ((SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores.tipoValor as tipval,valores.nombre as valor, valores.tipoRentabilidad as tiporent , entidad as enti FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join (select * from (select identidad as enti , nombre as entidad from oferentes) union (select identidad as enti , nombre as entidad from inversionistas))) WHERE fecha between '"+fechaInicial+"' and '"+fechaFinal+"')";
+
 	PreparedStatement st = conn.prepareStatement(query);
+
 	ResultSet set = st.executeQuery();
+
 	set.next();
+
 	int resultado = set.getInt("COUNT");
+
 	set.close();
+
 	st.close();
+
 	conn.close();
-	return resultado;	
-}
 
-private ArrayList<HashMap<String, String>> darMovimientos(int start, int rows, String order, String tipo, String search,String fechaInicial, String fechaFinal) throws SQLException {
-	
+	return resultado;
+
+	}
+
+
+
+	private ArrayList<HashMap<String, String>> darMovimientos(int start, int rows, String order, String tipo, String search,String fechaInicial, String fechaFinal) throws SQLException {
+
+
 	if(order == null){
-		order = "NOMBRE";
-	}
-	if(tipo == null){
-		tipo = "asc";
-	}
-	Connection conn=null;
-	try {
-		Class.forName("oracle.jdbc.OracleDriver");
-		String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
-		String user = "ISIS2304161420";
-		String pass = "entraros66151";
-		conn = DriverManager.getConnection(dbURL, user, pass);
-		if (conn != null) {
 
-		} else {
-			System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
-			throw new Exception("La conexion es null");
-		}
+	order = "NOMBRE";
+
+	}
+
+	if(tipo == null){
+
+	tipo = "asc";
+
+	}
+
+	Connection conn=null;
+
+	try {
+
+	Class.forName("oracle.jdbc.OracleDriver");
+
+	String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
+
+	String user = "ISIS2304161420";
+
+	String pass = "entraros66151";
+
+	conn = DriverManager.getConnection(dbURL, user, pass);
+
+	if (conn != null) {
+
+
+
+	} else {
+
+	System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
+
+	throw new Exception("La conexion es null");
+
+	}
+
+
 
 	} catch (Exception e) {
-		e.printStackTrace();
+
+	e.printStackTrace();
+
 	}
+
 	String query = "select fecha, monto as cantidad , tipooperacion as tipo_mercado , valor as nombre_valor,tipval as tipo_valor, entidad as nombre_usuario, intermediario as nombre_corredor from ( select a.*, ROWNUM rnum from (select * from ((SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores.tipoValor as tipval,valores.nombre as valor, valores.tipoRentabilidad as tiporent , entidad as enti FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join (select * from (select identidad as enti , nombre as entidad from oferentes) union (select identidad as enti , nombre as entidad from inversionistas))) WHERE fecha between '"+fechaInicial+"' and '"+fechaFinal+"' ORDER BY " +  order +" " +  tipo + ") a where ROWNUM <= ? AND (VALOR like '" + search +"%' OR ENTIDAD like '" + search +"%' )) where rnum  >= ?";
+
 	PreparedStatement st = conn.prepareStatement(query);
+
 	st.setInt(1, start + rows-1);
+
 	st.setInt(2, start);
+
 	ResultSet set = st.executeQuery();
+
 	System.err.println("Ejecuto el query perro");
+
 	ArrayList<HashMap<String, String>> resultado = darHola(set);
+
 	set.close();
+
 	st.close();
+
 	conn.close();
-	return resultado;	
+
+	return resultado;
+
+
+	}
+	
 	
 }
-	
-	
-}
-
-
-

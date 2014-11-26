@@ -97,7 +97,7 @@ public class ConsultarRangoFinal extends HttpServlet {
 			JsonObject json = new JsonObject();
 			
 			json.addProperty("method", "Top20");
-			json.addProperty("inicial", fechaDesde);
+			json.addProperty("inicio", fechaDesde);
 			json.addProperty("fin", fechaHasta);
 			
 			Gson gson = new GsonBuilder().create();
