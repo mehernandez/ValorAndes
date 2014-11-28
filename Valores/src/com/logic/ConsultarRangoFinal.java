@@ -1,6 +1,7 @@
 package com.logic;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -8,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.EventObject;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -24,9 +26,12 @@ import com.google.gson.JsonParser;
 /**
  * Servlet implementation class ConsultarRangoFinal
  */
-public class ConsultarRangoFinal extends HttpServlet {
+public class ConsultarRangoFinal extends HttpServlet implements IEscuchadorEventos {
 	private static final long serialVersionUID = 1L;
 	private Conector conector;
+	
+	private HttpServletRequest request;
+	private HttpServletResponse response;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -41,6 +46,27 @@ public class ConsultarRangoFinal extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		
+		JsonObject json = new JsonObject();
+		
+		json.addProperty("method", "Top20");
+		json.addProperty("inicio", (String) request.getAttribute("fechaDesde"));
+		json.addProperty("fin", (String) request.getAttribute("fechaHasta"));
+		
+		Gson gson = new GsonBuilder().create();
+		
+		String j = gson.toJson(json);
+		
+		
+		//
+		String resp = conector.preguntar(j);
+		//
+		
+		JsonParser jsonParser = new JsonParser();
+		JsonObject fullJson = jsonParser.parse(resp).getAsJsonObject();
+		
+		request.setAttribute("tabla2", fullJson);
+		
 	}
 
 	/**
@@ -48,6 +74,10 @@ public class ConsultarRangoFinal extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		
+		this.request = request;
+		this.response = response;
+		
 		String tipoVenta = request.getParameter("tipoConsulta");
 
 		if (tipoVenta.equalsIgnoreCase("mayorMovimiento")) {
@@ -94,11 +124,15 @@ public class ConsultarRangoFinal extends HttpServlet {
 			}
 			this.cerrar(conn);
 
+			
+			
+			
 			JsonObject json = new JsonObject();
 			
 			json.addProperty("method", "Top20");
-			json.addProperty("inicio", fechaDesde);
-			json.addProperty("fin", fechaHasta);
+	
+			json.addProperty("inicio", (String) request.getParameter("fechaDesde"));
+			json.addProperty("fin", (String) request.getParameter("fechaHasta"));
 			
 			Gson gson = new GsonBuilder().create();
 			
@@ -106,26 +140,37 @@ public class ConsultarRangoFinal extends HttpServlet {
 			
 			
 			//
-			String resp = conector.preguntar(j);
+			
+              conector.enviarPregunta(j);
 			//
+              
+              String url = "/RespuestaRangoFinal.jsp"; // relative url for display jsp
+      		// page
+      		ServletContext sc = getServletContext();
+      		
+      		
+      		RequestDispatcher rd = sc.getRequestDispatcher(url);
+      		
+      			
+      	
 			
-			JsonParser jsonParser = new JsonParser();
-			JsonObject fullJson = jsonParser.parse(resp).getAsJsonObject();
+			try {
+				Thread.sleep(10000);
+				} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				}
 			
-			request.setAttribute("tabla2", fullJson);
 			
+			rd.forward(request, response);
 		}
 		
 		
 		
 		
 		
-		String url = "/RespuestaRangoFinal.jsp"; // relative url for display jsp
-		// page
-		ServletContext sc = getServletContext();
-		RequestDispatcher rd = sc.getRequestDispatcher(url);
-		rd.forward(request, response);
-
+		
+System.out.println("Termino el metodo POST");
 	}
 	
 	public Statement crearConexion(Connection conn) {
@@ -162,6 +207,32 @@ public class ConsultarRangoFinal extends HttpServlet {
 			}
 		}
 	}
+	
+	public void manejarEvento(EventObject e)  {
+		System.out.println("empezo evento");
+		
+		
+		String mensaje = ((MiEvento)e).getElMensaje();
+		System.out.println("mensaje recibido: " + mensaje);
+		request.setAttribute("tabla2", mensaje);
+		
+		
+		
+		
+		System.out.println("Termino evento");
+		
+		Thread.currentThread().interrupt();
+		}
 
+
+	public void init(){
+		try {
+			conector = Conector.getInstance();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		conector.addEventListener(this);
+	}
 
 }

@@ -11,7 +11,7 @@
 String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 <% String tipoConsulta = request.getParameter("tipoConsulta"); %>
 <% ResultSet result = (ResultSet)(request.getAttribute("result")); 
-JsonObject tabla2 = (JsonObject)(request.getAttribute("tabla2"));%>
+String tabla2 = (String)(request.getAttribute("tabla2"));%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 
@@ -24,6 +24,39 @@ JsonObject tabla2 = (JsonObject)(request.getAttribute("tabla2"));%>
     <meta name="author" content="">
 
 <title>Valores de los Andes</title>
+
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+
+<script type="text/javascript">
+
+$(document).ready(function (){
+
+
+	var data = <%=tabla2 %>;       		
+//data = JSON.parse(data);
+  renderTop20(data["data"]);
+			
+});
+
+function renderTop20(data){
+	var table = document.getElementById("top20-body");
+	for(var i=0;i<data.length;i++){
+	var valor = data[i];
+	var row = table.insertRow(i);
+	var cellPosicion = row.insertCell(0);
+	cellPosicion.innerHTML = i+1;
+	var cellValor = row.insertCell(1);
+	cellValor.innerHTML = valor["NOMBRE"];
+	var cellCantidad = row.insertCell(2);
+	cellCantidad.innerHTML = valor["CANTIDAD"];
+	var cellPromedio = row.insertCell(3);
+	cellPromedio.innerHTML = valor["PROMEDIO"];
+	}
+	}
+
+</script>
+
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -275,7 +308,7 @@ JsonObject tabla2 = (JsonObject)(request.getAttribute("tabla2"));%>
                 <!--                        -->
 
                 <!--                        -->
-                
+                <br><br><br>    <br><br><br>    <br><br><br>    <br><br><br>    <br><br><br>
                 <h2> Respuesta consulta ValorAndes </h2>
    <!-- Respuesta consulta 1  -->
 
@@ -286,22 +319,18 @@ JsonObject tabla2 = (JsonObject)(request.getAttribute("tabla2"));%>
           		<table class="table table-hover table-striped">
           			<thead>
 						<tr>
-							<th>id Valor</th>	
-							<th>Valor</th>
-							<th>Tipo Rentabilidad</th>							
-							<th>Costo Promedio</th>
-							<th>Cantidad de veces negociado</th>
+						    <th>#</th>
+							<th>nombre</th>	
+							<th>cantidad</th>
+							<th>promedio</th>							
 							
-
-
+						
 						</tr>
           			</thead>	
-          			<tbody>
+          			<tbody id="top20-body">
           				<!-- Aqui hay que iterar -->
 						
-						<tr>
-					
-						</tr>
+						
 						
 						<!--                     -->
           			</tbody>

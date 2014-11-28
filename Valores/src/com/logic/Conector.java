@@ -12,12 +12,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.codec.binary.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,19 +25,24 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class Conector extends Thread{
-	
+
 	public final static String NOMBRE = "VALORANDES";
-	
+
 	/**
 	 * La direccion del servidor
 	 */
-	public final static String HOST = "157.253.250.89";
+	 public final static String HOST = "54.148.172.137";    // amazon
+	
+	//public final static String HOST = "186.28.34.3";  // Felipe
 
 	/**
 	 * El puerto a la conexion de pregunta
 	 */
 	public final static int PUERTO_PREGUNTA = 12345;
 	
+//	public final static int PUERTO_PREGUNTA = 12347;   // auxiliar
+	
+
 	/**
 	 * El puerto a la conexion de respuesta
 	 */
@@ -62,7 +67,7 @@ public class Conector extends Thread{
 	 * El lector del sistema 
 	 */
 	private BufferedReader stdInPregunta;
-	
+
 	//-----------------------------------------------------------
 
 	/**
@@ -84,7 +89,7 @@ public class Conector extends Thread{
 	 * El lector del sistema 
 	 */
 	private BufferedReader stdInRespuesta;
-	
+
 	/**
 	 * La instancia del conector
 	 */
@@ -94,7 +99,7 @@ public class Conector extends Thread{
 	 * Las clases que escuchan el evento
 	 */
 	private List _listeners = new ArrayList();
-	
+
 	//-----------------------------------------------------------
 	// CONSTRUCTOR
 	//-----------------------------------------------------------
@@ -108,7 +113,7 @@ public class Conector extends Thread{
 	private Conector() throws Exception{
 		System.out.println("=============================INICIANDO CONECTOR===================================");
 		openConnectionPregunta();
-		
+
 		outPregunta.write("REGISTRAR-" + NOMBRE);
 		outPregunta.flush();
 		String resp = inPregunta.readLine();
@@ -119,13 +124,13 @@ public class Conector extends Thread{
 			closeConnectionPregunta();
 			throw new Exception("No se pudo establecer la conexion con la cola pregunta");
 		}
-		
+
 		closeConnectionPregunta();
-		
+
 		//Registrar con respuesta
-		
+
 		openConnectionRespuesta();
-		
+
 		outRespuesta.write("REGISTRAR-" + NOMBRE);
 		outRespuesta.flush();
 		String resp1 = inRespuesta.readLine();
@@ -136,12 +141,12 @@ public class Conector extends Thread{
 			closeConnectionRespuesta();
 			throw new Exception("No se pudo establecer la conexion con la cola respuesta");
 		}
-		
+
 		closeConnectionRespuesta();
-		
+
 		start();
 	}
-	
+
 	public static Conector getInstance() throws Exception{
 		if(instancia == null)
 			instancia = new Conector();
@@ -156,6 +161,14 @@ public class Conector extends Thread{
 		System.out.println("======================================================================");
 		System.out.println("Monitoreando preguntas y respuestas");
 		System.out.println("======================================================================");
+		
+//		try {
+//			this.enviarRespuesta("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOBOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD");
+//		} catch (IOException e2) {
+//			// TODO Auto-generated catch block
+//			e2.printStackTrace();
+//		}
+		
 		while(true){
 			try {
 				openConnectionPregunta();
@@ -168,27 +181,35 @@ public class Conector extends Thread{
 				}else{
 					System.out.println("Pregunta recibida: " + params[0]);
 					//Atender pregunta!!
-//					String resp = Dao.pregunta(params[0]);
-					
+					//					String resp = Dao.pregunta(params[0]);
+
 					String par = params[0];
-					
+
 					JsonParser jsonParser = new JsonParser();
 					JsonObject fullJson = jsonParser.parse(par).getAsJsonObject();
+
+					String tipo = fullJson.get("method").getAsString();
+
 					
-					String tipo = fullJson.get("method").toString();
-					
-					System.out.println(tipo);
-					
+
 					if(tipo.equals("Top20")){
-						this.retornarTop20(fullJson.get("fechaInicio").toString(), fullJson.get("fin").toString());
+						System.out.println("Entre a "+tipo);
+						this.retornarTop20(fullJson.get("inicial").getAsString(), fullJson.get("fin").getAsString());
 					}
-					
+					else if(tipo.equals("darValores")){
+						
+						System.out.println("Entre a "+ tipo);
+						this.darConsultaMovimientos(fullJson.get("inicio").getAsString(), fullJson.get("fin").getAsString(),
+								fullJson.get("start").getAsInt(),fullJson.get("length").getAsInt()  , fullJson.get("columnName").getAsString(),
+								fullJson.get("tipo").getAsString(), fullJson.get("search").getAsString());
+					}
+
 					//String temp = "{\"recordsTotal\": 200,\"recordsFiltered\": 20,\"data\": [{\"NOMBRE\": \"Certificado44\",\"CANTIDAD\": \"2\",\"PROMEDIO\": \"259.34\"}],\"draw\":0}";
 					//enviarRespuesta(temp);
-//					enviarRespuesta(resp);
+					//					enviarRespuesta(resp);
 				}
 				closeConnectionPregunta();
-				
+
 			} catch (Exception e) {
 				try {
 					closeConnectionPregunta();
@@ -197,8 +218,8 @@ public class Conector extends Thread{
 					e1.printStackTrace();
 				}
 			}
-//			System.out.println("Pidiendo respuestas");
-			
+			//			System.out.println("Pidiendo respuestas");
+
 			try {
 				openConnectionRespuesta();
 				outRespuesta.write("PEDIR");
@@ -214,7 +235,7 @@ public class Conector extends Thread{
 					fireEvent(params[0]);
 				}
 				closeConnectionRespuesta();
-				
+
 			} catch (Exception e) {
 				try {
 					closeConnectionRespuesta();
@@ -231,17 +252,17 @@ public class Conector extends Thread{
 	 */
 	private void openConnectionPregunta(){
 		try {
-	
+
 			socketPregunta = new Socket(HOST, PUERTO_PREGUNTA);
-	
+
 			outPregunta = new PrintWriter(socketPregunta.getOutputStream(), true);
-	
+
 			inPregunta = new BufferedReader(new InputStreamReader(
 					socketPregunta.getInputStream()));    
-	
+
 			stdInPregunta = new BufferedReader(new InputStreamReader(System.in));
-	
-	
+
+
 		} catch (UnknownHostException e) {
 			System.err.println("Unknown Host.");
 			// System.exit(1);
@@ -263,22 +284,22 @@ public class Conector extends Thread{
 		socketRespuesta.close();
 		stdInRespuesta.close();
 	}
-	
+
 	/**
 	 * Inicia la conexion con el socket de pregunta
 	 */
 	private void openConnectionRespuesta(){
 		try {
-	
+
 			socketRespuesta = new Socket(HOST, PUERTO_RESPUESTA);
-	
+
 			outRespuesta = new PrintWriter(socketRespuesta.getOutputStream(), true);
-	
+
 			inRespuesta = new BufferedReader(new InputStreamReader(
 					socketRespuesta.getInputStream()));    
-	
+
 			stdInRespuesta = new BufferedReader(new InputStreamReader(System.in));
-	
+
 		} catch (UnknownHostException e) {
 			System.err.println("Unknown Host.");
 			// System.exit(1);
@@ -310,41 +331,43 @@ public class Conector extends Thread{
 		outPregunta.close();
 		inPregunta.close();
 		stdInPregunta.close();
-		
+
 		System.out.println("Conexion a socket pregunta cerrada -stateless-");
-		
+
 		socketRespuesta.close();
 		outRespuesta.close();
 		inRespuesta.close();
 		stdInRespuesta.close(); 
-		
+
 		System.out.println("Conexion a socket respuesta cerrada -stateless-");
-		
+
 		instancia.stop();
 	}
-	
+
 	//-----------------------------------------------------------
 	// METODOS
 	//-----------------------------------------------------------
-	
+
 	public void enviarPregunta(String pregunta) throws IOException{
 		openConnectionPregunta();
-		
+
 		outPregunta.write("PUBLICAR-" + pregunta);
 		outPregunta.flush();
-		
+
 		closeConnectionPregunta();
 	}
-	
+
 	public void enviarRespuesta(String respuesta) throws IOException{
-		openConnectionRespuesta();
 		
+		
+		openConnectionRespuesta();
+
 		outRespuesta.write("PUBLICAR-" + respuesta);
 		outRespuesta.flush();
-		
+
 		closeConnectionRespuesta();
 	}
-	
+
 	//-----------------------------------------------------------
 	// EVENTOS
 	//-----------------------------------------------------------
@@ -352,19 +375,19 @@ public class Conector extends Thread{
 	public synchronized void addEventListener(IEscuchadorEventos listener)  {
 		_listeners.add(listener);
 	}
-	
+
 	public synchronized void removeEventListener(IEscuchadorEventos listener)   {
 		_listeners.remove(listener);
 	}
-	
+
 	private synchronized void fireEvent(String hola) {
-	    MiEvento event = new MiEvento(this, hola);
-	    Iterator i = _listeners.iterator();
-	    while(i.hasNext())  {
-	      ((IEscuchadorEventos) i.next()).manejarEvento(event);
-	    }
-	  }
-	
+		MiEvento event = new MiEvento(this, hola);
+		Iterator i = _listeners.iterator();
+		while(i.hasNext())  {
+			((IEscuchadorEventos) i.next()).manejarEvento(event);
+		}
+	}
+
 	//-----------------------------------------------------------
 	// MAIN
 	//-----------------------------------------------------------
@@ -380,23 +403,23 @@ public class Conector extends Thread{
 		}
 		//nicky.start();
 	}
-	
-	
+
+
 	public String preguntar
 
 	(String pre){
 
 
-	// TODO
+		// TODO
 
-	return pre;
+		return pre;
 
 	}
 
 
 	public void responder(String resp){
 
-	// TODO
+		// TODO
 
 	}
 
@@ -407,56 +430,48 @@ public class Conector extends Thread{
 	public void retornarTop20(String fechaDesde , String fechaHasta) throws Exception{
 
 
-	Connection con =  DAO.conectar();
+		Connection con =  DAO.conectar();
+		
+		
 
 
-	try {
+		try {
 
-	Statement st = con.createStatement();
-
-
-
-	String where = " ";
-
-
-
-	if (!fechaDesde.isEmpty() && !fechaHasta.isEmpty()) {
-
-	try {
-
-	Date d = new SimpleDateFormat("dd/MM/YYYY")
-
-	.parse(fechaDesde.trim());
-
-	Date x = new SimpleDateFormat("dd/MM/YYYY")
-
-	.parse(fechaHasta.trim());
+			Statement st = con.createStatement();
 
 
 
-	where += " AND fecha BETWEEN '" + fechaDesde + "' AND '"
+			String where = " ";
+
+
+
+			if (!fechaDesde.isEmpty() && !fechaHasta.isEmpty()) {
+
+				try {
+
+					String[] des = fechaDesde.split("/");
+					fechaDesde = des[1]+"/"+des[0]+"/"+des[2];
+					
+					String[] has = fechaHasta.split("/");
+					fechaHasta = has[1]+"/"+has[0]+"/"+has[2];
+					
+					System.out.println(fechaDesde + "     "+ fechaHasta );
+
+
+
+					where += " AND fecha BETWEEN '" + fechaDesde + "' AND '"
 
 	+ fechaHasta + "' ";
 
-	} catch (Exception e) {
+				} catch (Exception e) {
 
-	// error en escritura de la fecha
+					e.printStackTrace();
 
-	}
+				}
+			}
+			ResultSet rs = st
 
-
-
-
-
-	}
-
-
-
-
-
-	ResultSet rs = st
-
-	.executeQuery("select * from(select idvalor,valor,tiporentabilidad, count(idvalor) as negociado,avg(preciovalor) as costopromedio  from( select valores.idvalor, "
+					.executeQuery("select valor as nombre, negociado as cantidad, costopromedio as promedio from(select idvalor,valor,tiporentabilidad, count(idvalor) as negociado,round(avg(preciovalor),0) as costopromedio  from( select valores.idvalor, "
 
 	+ "valores.nombre as valor,preciovalor ,tiposrentabilidad.nombre as tiporentabilidad "
 
@@ -467,78 +482,97 @@ public class Conector extends Thread{
 	+ ") group by idvalor, valor,tiporentabilidad) where rownum <=20 order by negociado desc,idvalor,valor ");
 
 
-	ArrayList<HashMap<String, String>> result = darHola(rs);
+			ArrayList<HashMap<String, String>> result = darHola(rs);
 
 
-	String json = darJson(result, 0, 0);
+			String json = darJson(result, 0, 0);
 
 
-    this.enviarRespuesta(json);
-	responder(json);
-
-
-
-	} catch (SQLException e) {
-
-	// TODO Auto-generated catch block
-
-	e.printStackTrace();
-
-	}
-
-	DAO.cerrar(con);
+			
+			this.enviarRespuesta(json);
+			
+		System.out.println("Respondi el top 20  !!!!!");
+		System.out.println(json);
+			//responder(json);
 
 
 
-	}
+		} catch (SQLException e) {
+
+			// TODO Auto-generated catch block
+
+			e.printStackTrace();
+
+		}
+
+		DAO.cerrar(con);
 
 
-
-	public void darConsultaMovimientos(String fechaInicial , String fechaFinal, int start, int length,int columnOrder,
-
-	String columnName,String tipo , String search){
-
-
-	ArrayList<HashMap<String, String>> resultado = null;
-
-	int conteo=0;
-
-	int conteoSearch=0;
-
-	try {
-
-	resultado = darMovimientos(start, length, columnName, tipo, search,fechaInicial,fechaFinal);
-
-	conteo = contarMovimientosTotal(fechaInicial,fechaFinal);
-
-	conteoSearch = contarMovimientos(search,fechaInicial,fechaFinal);
-
-	System.out.println("conteo " + conteo);
-
-	} catch (Exception e) {
-
-	e.printStackTrace();
 
 	}
 
 
 
-	DataTableObject dataTableObject = new DataTableObject();
+	public void darConsultaMovimientos(String fechaInicial , String fechaFinal, int start, int length,
 
-	dataTableObject.setAaData(resultado);
-
-	dataTableObject.setRecordsFiltered(conteoSearch);
-
-	dataTableObject.setRecordsTotal(conteo);
+			String columnName,String tipo , String search){
 
 
+		ArrayList<HashMap<String, String>> resultado = null;
 
-	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		int conteo=0;
 
-	String json = gson.toJson(dataTableObject);
+		int conteoSearch=0;
+
+		try {
+			
+			String[] in = fechaInicial.split("/");
+			fechaInicial = in[1]+"/"+in[0]+"/"+in[2];
+			
+			String[] fin = fechaFinal.split("/");
+			fechaFinal = fin[1]+"/"+fin[0]+"/"+fin[2];
+
+			resultado = darMovimientos(start, length, columnName, tipo, search,fechaInicial,fechaFinal);
+
+			conteo = contarMovimientosTotal(fechaInicial,fechaFinal);
+
+			conteoSearch = contarMovimientos(search,fechaInicial,fechaFinal);
+
+			System.out.println("conteo " + conteo);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
 
 
-	responder(json);
+
+		DataTableObject dataTableObject = new DataTableObject();
+
+		dataTableObject.setAaData(resultado);
+
+		dataTableObject.setRecordsFiltered(conteoSearch);
+
+		dataTableObject.setRecordsTotal(conteo);
+
+
+
+		Gson gson = new GsonBuilder().create();
+
+		String json = gson.toJson(dataTableObject);
+
+
+		try {
+			json= json.replace("-", "/");
+			this.enviarRespuesta(json);   // responder
+			
+			System.out.println("Respondi !");
+			System.out.println(json);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -548,35 +582,35 @@ public class Conector extends Thread{
 
 	public static ArrayList<HashMap<String, String>> darHola(ResultSet resSet) throws SQLException{
 
-	ArrayList<HashMap<String, String>> finale = new ArrayList<HashMap<String,String>>();
+		ArrayList<HashMap<String, String>> finale = new ArrayList<HashMap<String,String>>();
 
-	int j = 0;
+		int j = 0;
 
-	while(resSet.next()){
+		while(resSet.next()){
 
-	Object[] str = new Object[resSet.getMetaData().getColumnCount()];
+			Object[] str = new Object[resSet.getMetaData().getColumnCount()];
 
-	HashMap<String, String> temp = new HashMap<String, String>();
+			HashMap<String, String> temp = new HashMap<String, String>();
 
-	for (int i = 1; i <= str.length; i++) {
+			for (int i = 1; i <= str.length; i++) {
 
-	String label = resSet.getMetaData().getColumnLabel(i);
+				String label = resSet.getMetaData().getColumnLabel(i);
 
-	String obj = resSet.getString(i);
+				String obj = resSet.getString(i);
 
-	temp.put(label, obj);
+				temp.put(label, obj);
 
-	}
+			}
 
-	finale.add(temp);
+			finale.add(temp);
 
-	j++;
+			j++;
 
-	}
+		}
 
 
 
-	return finale;
+		return finale;
 
 	}
 
@@ -585,17 +619,17 @@ public class Conector extends Thread{
 	public String darJson(ArrayList<HashMap<String, String>> resultado,int conteo, int conteoSearch){
 
 
-	DataTableObject dataTableObject = new DataTableObject();
+		DataTableObject dataTableObject = new DataTableObject();
 
-	dataTableObject.setAaData(resultado);
+		dataTableObject.setAaData(resultado);
 
-	dataTableObject.setRecordsFiltered(conteoSearch);
+		dataTableObject.setRecordsFiltered(conteoSearch);
 
-	dataTableObject.setRecordsTotal(conteo);
+		dataTableObject.setRecordsTotal(conteo);
 
-	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Gson gson = new GsonBuilder().create();
 
-	return gson.toJson(dataTableObject);
+		return gson.toJson(dataTableObject);
 
 	}
 
@@ -605,57 +639,57 @@ public class Conector extends Thread{
 
 	private int contarMovimientos(String search,String fechaInicial,String fechaFinal) throws SQLException {
 
-	Connection conn=null;
+		Connection conn=null;
 
-	try {
+		try {
 
-	Class.forName("oracle.jdbc.OracleDriver");
+			Class.forName("oracle.jdbc.OracleDriver");
 
-	String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
+			String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
 
-	String user = "ISIS2304161420";
+			String user = "ISIS2304161420";
 
-	String pass = "entraros66151";
+			String pass = "entraros66151";
 
-	conn = DriverManager.getConnection(dbURL, user, pass);
+			conn = DriverManager.getConnection(dbURL, user, pass);
 
-	if (conn != null) {
-
-
-
-	} else {
-
-	System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
-
-	throw new Exception("La conexion es null");
-
-	}
+			if (conn != null) {
 
 
 
-	} catch (Exception e) {
+			} else {
 
-	e.printStackTrace();
+				System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
 
-	}
+				throw new Exception("La conexion es null");
 
-	String query = "select count(*) as count from (select * from ((SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores.tipoValor as tipval,valores.nombre as valor, valores.tipoRentabilidad as tiporent , entidad as enti FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join (select * from (select identidad as enti , nombre as entidad from oferentes) union (select identidad as enti , nombre as entidad from inversionistas))) WHERE fecha between '"+fechaInicial+"' and '"+fechaFinal+"') where VALOR like '" + search +"%' OR ENTIDAD like '" + search +"%'";
+			}
 
-	PreparedStatement st = conn.prepareStatement(query);
 
-	ResultSet set = st.executeQuery();
 
-	set.next();
+		} catch (Exception e) {
 
-	int resultado = set.getInt("COUNT");
+			e.printStackTrace();
 
-	set.close();
+		}
 
-	st.close();
+		String query = "select count(*) as count from (select * from ((SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores.tipoValor as tipval,valores.nombre as valor, valores.tipoRentabilidad as tiporent , entidad as enti FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join (select * from (select identidad as enti , nombre as entidad from oferentes) union (select identidad as enti , nombre as entidad from inversionistas))) WHERE fecha between '"+fechaInicial+"' and '"+fechaFinal+"') where VALOR like '" + search +"%' OR ENTIDAD like '" + search +"%'";
 
-	conn.close();
+		PreparedStatement st = conn.prepareStatement(query);
 
-	return resultado;
+		ResultSet set = st.executeQuery();
+
+		set.next();
+
+		int resultado = set.getInt("COUNT");
+
+		set.close();
+
+		st.close();
+
+		conn.close();
+
+		return resultado;
 
 	}
 
@@ -663,57 +697,57 @@ public class Conector extends Thread{
 
 	private int contarMovimientosTotal(String fechaInicial,String fechaFinal) throws SQLException {
 
-	Connection conn=null;
+		Connection conn=null;
 
-	try {
+		try {
 
-	Class.forName("oracle.jdbc.OracleDriver");
+			Class.forName("oracle.jdbc.OracleDriver");
 
-	String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
+			String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
 
-	String user = "ISIS2304161420";
+			String user = "ISIS2304161420";
 
-	String pass = "entraros66151";
+			String pass = "entraros66151";
 
-	conn = DriverManager.getConnection(dbURL, user, pass);
+			conn = DriverManager.getConnection(dbURL, user, pass);
 
-	if (conn != null) {
-
-
-
-	} else {
-
-	System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
-
-	throw new Exception("La conexion es null");
-
-	}
+			if (conn != null) {
 
 
 
-	} catch (Exception e) {
+			} else {
 
-	e.printStackTrace();
+				System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
 
-	}
+				throw new Exception("La conexion es null");
 
-	String query = "select count(*) as count from (select * from ((SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores.tipoValor as tipval,valores.nombre as valor, valores.tipoRentabilidad as tiporent , entidad as enti FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join (select * from (select identidad as enti , nombre as entidad from oferentes) union (select identidad as enti , nombre as entidad from inversionistas))) WHERE fecha between '"+fechaInicial+"' and '"+fechaFinal+"')";
+			}
 
-	PreparedStatement st = conn.prepareStatement(query);
 
-	ResultSet set = st.executeQuery();
 
-	set.next();
+		} catch (Exception e) {
 
-	int resultado = set.getInt("COUNT");
+			e.printStackTrace();
 
-	set.close();
+		}
 
-	st.close();
+		String query = "select count(*) as count from (select * from ((SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores.tipoValor as tipval,valores.nombre as valor, valores.tipoRentabilidad as tiporent , entidad as enti FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join (select * from (select identidad as enti , nombre as entidad from oferentes) union (select identidad as enti , nombre as entidad from inversionistas))) WHERE fecha between '"+fechaInicial+"' and '"+fechaFinal+"')";
 
-	conn.close();
+		PreparedStatement st = conn.prepareStatement(query);
 
-	return resultado;
+		ResultSet set = st.executeQuery();
+
+		set.next();
+
+		int resultado = set.getInt("COUNT");
+
+		set.close();
+
+		st.close();
+
+		conn.close();
+
+		return resultado;
 
 	}
 
@@ -722,76 +756,83 @@ public class Conector extends Thread{
 	private ArrayList<HashMap<String, String>> darMovimientos(int start, int rows, String order, String tipo, String search,String fechaInicial, String fechaFinal) throws SQLException {
 
 
-	if(order == null){
+		if(order == null){
 
-	order = "NOMBRE";
+			order = "NOMBRE";
+
+		}
+
+		if(tipo == null){
+
+			tipo = "asc";
+
+		}
+
+		Connection conn=null;
+
+		try {
+
+			Class.forName("oracle.jdbc.OracleDriver");
+
+			String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
+
+			String user = "ISIS2304161420";
+
+			String pass = "entraros66151";
+
+			conn = DriverManager.getConnection(dbURL, user, pass);
+
+			if (conn != null) {
+
+
+
+			} else {
+
+				System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
+
+				throw new Exception("La conexion es null");
+
+			}
+
+
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+
+		String query = "select fecha, monto as cantidad , tipooperacion as tipo_mercado , valor as nombre_valor,tipval as tipo_valor, entidad as nombre_usuario, intermediario as nombre_corredor from ( select a.*, ROWNUM rnum from (select * from ((SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores.tipoValor as tipval,valores.nombre as valor, valores.tipoRentabilidad as tiporent , entidad as enti FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join (select * from (select identidad as enti , nombre as entidad from oferentes) union (select identidad as enti , nombre as entidad from inversionistas))) WHERE fecha between '"+fechaInicial+"' and '"+fechaFinal+"' ORDER BY " +  order +" " +  tipo + ") a where ROWNUM <= ? AND (VALOR like '" + search +"%' OR ENTIDAD like '" + search +"%' )) where rnum  >= ?";
+
+		PreparedStatement st = conn.prepareStatement(query);
+
+		st.setInt(1, start + rows-1);
+
+		st.setInt(2, start);
+
+		ResultSet set = st.executeQuery();
+
+		System.err.println("Ejecuto el query perro");
+
+		ArrayList<HashMap<String, String>> resultado = darHola(set);
+
+		set.close();
+
+		st.close();
+
+		conn.close();
+
+		return resultado;
+
 
 	}
 
-	if(tipo == null){
-
-	tipo = "asc";
-
-	}
-
-	Connection conn=null;
-
-	try {
-
-	Class.forName("oracle.jdbc.OracleDriver");
-
-	String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
-
-	String user = "ISIS2304161420";
-
-	String pass = "entraros66151";
-
-	conn = DriverManager.getConnection(dbURL, user, pass);
-
-	if (conn != null) {
-
-
-
-	} else {
-
-	System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
-
-	throw new Exception("La conexion es null");
-
-	}
-
-
-
-	} catch (Exception e) {
-
-	e.printStackTrace();
-
-	}
-
-	String query = "select fecha, monto as cantidad , tipooperacion as tipo_mercado , valor as nombre_valor,tipval as tipo_valor, entidad as nombre_usuario, intermediario as nombre_corredor from ( select a.*, ROWNUM rnum from (select * from ((SELECT fecha,monto, intermediario ,tipoOperacion,numerovalores,valores.tipoValor as tipval,valores.nombre as valor, valores.tipoRentabilidad as tiporent , entidad as enti FROM OPERACIONES , VALORES  where valor=idvalor  ) natural join (select * from (select identidad as enti , nombre as entidad from oferentes) union (select identidad as enti , nombre as entidad from inversionistas))) WHERE fecha between '"+fechaInicial+"' and '"+fechaFinal+"' ORDER BY " +  order +" " +  tipo + ") a where ROWNUM <= ? AND (VALOR like '" + search +"%' OR ENTIDAD like '" + search +"%' )) where rnum  >= ?";
-
-	PreparedStatement st = conn.prepareStatement(query);
-
-	st.setInt(1, start + rows-1);
-
-	st.setInt(2, start);
-
-	ResultSet set = st.executeQuery();
-
-	System.err.println("Ejecuto el query perro");
-
-	ArrayList<HashMap<String, String>> resultado = darHola(set);
-
-	set.close();
-
-	st.close();
-
-	conn.close();
-
-	return resultado;
-
-
-	}
+	public String transformFromB64(String toConvert) {
+		return new String(Base64.decodeBase64(toConvert));
+		}
 	
-	
+	public String encodeToB64(String toConvert){
+		byte[] encodedBytes = Base64.encodeBase64(toConvert.getBytes());
+		return new String(encodedBytes);
+		}
 }
