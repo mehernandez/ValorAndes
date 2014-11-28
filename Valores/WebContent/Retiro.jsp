@@ -273,6 +273,26 @@ JsonObject externos = (JsonObject)(request.getAttribute("externos"));%>
               <!--                  -->
               
               
+                  <!--  Consultar existencias de valores -->
+                <form action="EliminarIntermediario.html" method="post" >
+                            <div class="form-group input-group">
+                            	
+
+                                                              
+                             
+                            	
+                            	
+                                  <br><br>
+
+
+
+                                <button type="submit" class="btn btn-primary btn-danger btn-lg">Eliminar</button>
+                                
+                            </div>
+                </form>
+              <!--                  -->
+              
+              
 
              
 

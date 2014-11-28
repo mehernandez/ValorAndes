@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+
 import org.apache.commons.codec.binary.Base64;
 
 import com.google.gson.Gson;
@@ -202,6 +205,14 @@ public class Conector extends Thread{
 						this.darConsultaMovimientos(fullJson.get("inicio").getAsString(), fullJson.get("fin").getAsString(),
 								fullJson.get("start").getAsInt(),fullJson.get("length").getAsInt()  , fullJson.get("columnName").getAsString(),
 								fullJson.get("tipo").getAsString(), fullJson.get("search").getAsString());
+					}
+					else if (tipo.equals("darIntermediarios")){
+						System.out.println("Entre a "+ tipo);
+						this.darIntermediarios();
+					}
+					else if(tipo.equals("retirar")){
+						System.out.println("Entre a "+ tipo);
+						this.eliminarIntermediario(fullJson.get("id").getAsString());
 					}
 
 					//String temp = "{\"recordsTotal\": 200,\"recordsFiltered\": 20,\"data\": [{\"NOMBRE\": \"Certificado44\",\"CANTIDAD\": \"2\",\"PROMEDIO\": \"259.34\"}],\"draw\":0}";
@@ -428,23 +439,11 @@ public class Conector extends Thread{
 
 
 	public void retornarTop20(String fechaDesde , String fechaHasta) throws Exception{
-
-
-		Connection con =  DAO.conectar();
-		
-		
-
-
+		Connection con =  DAO.conectar();		
 		try {
 
 			Statement st = con.createStatement();
-
-
-
 			String where = " ";
-
-
-
 			if (!fechaDesde.isEmpty() && !fechaHasta.isEmpty()) {
 
 				try {
@@ -835,4 +834,159 @@ public class Conector extends Thread{
 		byte[] encodedBytes = Base64.encodeBase64(toConvert.getBytes());
 		return new String(encodedBytes);
 		}
+	
+	
+	public void darIntermediarios(){
+		
+		
+		
+		Connection con = DAO.conectar();
+		
+		try{
+		
+		Statement st = con.createStatement();
+		
+		ResultSet rs = st
+
+				.executeQuery("select nombre , numeroRegistro as numero_registro , identidad as id from intermediarios where rownum <= 5");
+
+
+		ArrayList<HashMap<String, String>> result = darHola(rs);
+
+
+		String json = darJson(result, 0, 0);
+
+       json = json.replace("-", "_");
+		
+		this.enviarRespuesta(json);
+		
+	System.out.println("Respondi el dar Intermediarios  !!!!!");
+	System.out.println(json);
+		//responder(json);
+
+
+
+	} catch (Exception e) {
+
+		// TODO Auto-generated catch block
+
+		e.printStackTrace();
+
+	}
+
+	DAO.cerrar(con);
+
+
+
+}
+	
+	public boolean eliminarIntermediario(String idIntermediario){
+		
+		
+		
+	Connection conn = null;
+
+	
+		boolean resp = false;
+
+		try {
+			
+			 conn = DAO.conectar();
+			Statement st = conn.createStatement();
+			//Chambonada
+
+				conn.setAutoCommit(false);
+					
+			//
+			
+			ResultSet rs = st
+					.executeQuery("select pendientes.idoperacion,pendientes.cantidad,operaciones.tipooperacion,operaciones.valor as idvalor,entidad as identidad "
+							+ "from operaciones,pendientes where operaciones.idoperacion=pendientes.idoperacion and intermediario="
+							+ idIntermediario);
+			boolean ya = true;
+			while (rs.next() && ya) {
+				int idOp = rs.getInt("idoperacion");
+				int cantidad = rs.getInt("cantidad");
+				String tipoOp = rs.getString("tipooperacion");
+				int idValor = rs.getInt("idvalor");
+				int idEntidad = rs.getInt("identidad");
+
+				if (tipoOp.equalsIgnoreCase("COMPRA")) {
+					int f = st
+							.executeUpdate("delete from pendientes where idoperacion="
+									+ idOp);
+					if (f == 0) {
+						ya = false;
+					}
+				} else {
+					int f = st
+							.executeUpdate("update portafolio set cantidad=cantidad+"
+									+ cantidad
+									+ " where identidad="
+									+ idEntidad + " and idvalor=" + idValor);
+					if (f == 1) {
+						
+						//Chambonada
+						Connection cox = DAO.conectar();
+						Statement st2 = cox.createStatement();
+				
+										
+						st2.executeQuery("select * from pendientes where idoperacion="+idOp+" for update");
+						
+						//
+						int g = st
+								.executeUpdate("delete from pendientes where idoperacion="
+										+ idOp);
+						DAO.cerrar(cox);
+						if (g == 0) {
+							ya = false;
+						}
+					} else {
+						ya = false;
+					}
+				}
+			}
+
+			if (ya) {
+
+				int h = st
+						.executeUpdate("delete from entidades where identidad="
+								+ idIntermediario);
+				int b = st
+						.executeUpdate("delete from intermediarios where identidad="
+								+ idIntermediario);
+				int k = st.executeUpdate("delete from usuarios where entidad="
+						+ idIntermediario);
+				if (h == 1 && b == 1 && k == 1) {
+                    conn.commit();
+					resp = true;
+					
+					System.out.println("Se elimino el intermediario "+ idIntermediario);
+					
+					
+				} else {
+					conn.rollback();
+				}
+			}
+			else{
+				conn.rollback();
+			}
+
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}
+
+		DAO.cerrar(conn);
+
+		return resp;
+		
+	}
+
+	
 }

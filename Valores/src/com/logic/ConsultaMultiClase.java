@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.HashMap;
 
 import javax.servlet.RequestDispatcher;
@@ -27,9 +28,10 @@ import com.google.gson.JsonObject;
 /**
  * Servlet implementation class ConsultaMultiClase
  */
-public class ConsultaMultiClase extends HttpServlet {
+public class ConsultaMultiClase extends HttpServlet implements IEscuchadorEventos {
 	private static final long serialVersionUID = 1L;
 	private Conector conector;
+	private HttpServletResponse response;
     
     /**
      * @see HttpServlet#HttpServlet()
@@ -68,6 +70,7 @@ public class ConsultaMultiClase extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		this.response = response;
 		try{
 			
 			
@@ -159,11 +162,17 @@ public class ConsultaMultiClase extends HttpServlet {
 				
 				
 				//
-				String resp = conector.preguntar(j);
+				conector.enviarPregunta(j);
 				//
 				
-				System.out.println(resp);
-				out.print(resp);
+				try {
+					Thread.sleep(10000);
+					} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					}
+				
+				System.out.println("Termino Metodo POST");
 				
 			}
 
@@ -325,6 +334,37 @@ public class ConsultaMultiClase extends HttpServlet {
 		}
 	}
 	
+	public void manejarEvento(EventObject e) {
+		System.out.println("empezo evento");
+		PrintWriter out=null;
+		try {
+		out = response.getWriter();
+		} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+		}
+		String mensaje = ((MiEvento)e).getElMensaje();
+		System.out.println("mensaje recibido: " + mensaje);
+		out.print(mensaje);
+		
+		System.out.println("Termino evento");
+		
+		Thread.currentThread().interrupt();
+		
+		
+		
+		}
+
+
+	public void init(){
+		try {
+			conector = Conector.getInstance();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		conector.addEventListener(this);
+	}
 	
 	
 	

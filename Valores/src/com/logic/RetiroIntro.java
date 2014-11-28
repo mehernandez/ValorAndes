@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.EventObject;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -21,8 +22,9 @@ import com.google.gson.JsonParser;
 /**
  * Servlet implementation class RetiroIntro
  */
-public class RetiroIntro extends HttpServlet {
+public class RetiroIntro extends HttpServlet implements IEscuchadorEventos{
 	private static final long serialVersionUID = 1L;
+	private HttpServletRequest request;
 	
 	Conector conector;
 
@@ -42,6 +44,8 @@ public class RetiroIntro extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		
+		this.request = request;
 		Connection conn = null;
 		Statement st = this.crearConexion(conn);
 		try {
@@ -61,12 +65,16 @@ public class RetiroIntro extends HttpServlet {
 		
 		String j = new GsonBuilder().create().toJson(json);
 		
-		String resp = conector.preguntar(j);
+		conector.enviarPregunta(j);
 		
-		JsonParser jsonParser = new JsonParser();
-		JsonObject fullJson = jsonParser.parse(resp).getAsJsonObject();
+		try {
+			Thread.sleep(10000);
+			} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			}
 		
-		request.setAttribute("externos", fullJson);
+		
 
 		String url = "/Retiro.jsp"; // relative url for display jsp page
 		ServletContext sc = getServletContext();
@@ -117,6 +125,34 @@ public class RetiroIntro extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	
+	public void manejarEvento(EventObject e)  {
+		System.out.println("empezo evento");
+		
+		
+		String mensaje = ((MiEvento)e).getElMensaje();
+		System.out.println("mensaje recibido: " + mensaje);
+		request.setAttribute("externos", mensaje);
+		
+		
+		
+		
+		System.out.println("Termino evento");
+		
+		Thread.currentThread().interrupt();
+		}
+
+
+	public void init(){
+		try {
+			conector = Conector.getInstance();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		conector.addEventListener(this);
 	}
 
 }
