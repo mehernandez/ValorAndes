@@ -9,7 +9,7 @@
 <% String login = (String)(request.getSession().getAttribute("login")) ;
 String tipo = (String)(request.getSession().getAttribute("tipo"));%>
 <%String resp = (String) (request.getAttribute("response")); %>
-<% ResultSet result = (ResultSet)(request.getAttribute("tabla")); %>
+<% //ResultSet result = (ResultSet)(request.getAttribute("tabla")); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 

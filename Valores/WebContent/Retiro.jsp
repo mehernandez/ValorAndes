@@ -7,15 +7,26 @@
 <!-- This is a directive space -->
 <%@ page import="java.util.*" %>
 <%@ page session="true" %>
-<%@ page import="com.google.gson.JsonObject" %>
+<%@ page import="com.google.gson.*" %>
 <% String login = (String)(request.getSession().getAttribute("login")) ;
 String tipo = (String)(request.getSession().getAttribute("tipo"));%>
-<% ResultSet result = (ResultSet)(request.getAttribute("result"));
-JsonObject externos = (JsonObject)(request.getAttribute("externos"));%>
+<%String externos = (String)(request.getAttribute("externos"));
+ResultSet result = (ResultSet)(request.getAttribute("result"));
+
+System.out.println("externos es "+externos); %>
+
+<% JsonParser jsonParser = new JsonParser();
+JsonObject fullJson = jsonParser.parse(externos).getAsJsonObject();
+System.out.println("fullJson "+ fullJson);
+JsonArray data = fullJson.get("data").getAsJsonArray();
+System.out.println("data"+data);%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 
 <head>
+
+
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -251,7 +262,7 @@ JsonObject externos = (JsonObject)(request.getAttribute("externos"));%>
 
                                                               
                                   <%if(result!=null){ %>
-                                  <h2> Intermediarios Disponibles: </h2>
+                                  <h2> Intermediarios Disponibles bolsa local: </h2>
                             	<select class="form-control" name="idIntermediario">
 									<% while (result.next()){ %>
 									<option><%=result.getString("id")+":"+result.getString("nombre") %></option>
@@ -272,16 +283,27 @@ JsonObject externos = (JsonObject)(request.getAttribute("externos"));%>
                 </form>
               <!--                  -->
               
-              
+              <br><br><br><br><br>
                   <!--  Consultar existencias de valores -->
-                <form action="EliminarIntermediario.html" method="post" >
+                <form action="Preguntar.html" method="post" >
                             <div class="form-group input-group">
                             	
 
                                                               
                              
+                            	     <h2> Intermediarios Disponibles bolsa local: </h2>
+                            
                             	
-                            	
+                            	<select class="form-control" name="idIntermediario">
+									<%Iterator it = data.iterator();
+									
+									while (it.hasNext()){ 
+									JsonElement js = (JsonElement)it.next();
+									System.out.println("El json element"+ js);
+									JsonObject j = js.getAsJsonObject();%>
+									<option><%=j.get("id").getAsString()+":"+j.get("nombre").getAsString()%></option>
+								   <%} %>
+                            	</select >
                                   <br><br>
 
 

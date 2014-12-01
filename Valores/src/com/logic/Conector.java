@@ -34,16 +34,16 @@ public class Conector extends Thread{
 	/**
 	 * La direccion del servidor
 	 */
-	 public final static String HOST = "54.148.172.137";    // amazon
+	 public final static String HOST = "186.28.34.3";    // amazon
 	
 	//public final static String HOST = "186.28.34.3";  // Felipe
 
 	/**
 	 * El puerto a la conexion de pregunta
 	 */
-	public final static int PUERTO_PREGUNTA = 12345;
+//	public final static int PUERTO_PREGUNTA = 12345;
 	
-//	public final static int PUERTO_PREGUNTA = 12347;   // auxiliar
+	public final static int PUERTO_PREGUNTA = 12347;   // auxiliar
 	
 
 	/**
@@ -165,8 +165,21 @@ public class Conector extends Thread{
 		System.out.println("Monitoreando preguntas y respuestas");
 		System.out.println("======================================================================");
 		
+//JsonObject json = new JsonObject();
+//		
+//		json.addProperty("method", "compraVenta");
+//		
+//		json.addProperty("id", 1);
+//		
+//		json.addProperty("cantidad", 5);
+//
+//		
+//		Gson gson = new GsonBuilder().create();
+//		
+//		String j = gson.toJson(json);
+//		
 //		try {
-//			this.enviarRespuesta("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOBOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD");
+//			this.enviarPregunta(j);
 //		} catch (IOException e2) {
 //			// TODO Auto-generated catch block
 //			e2.printStackTrace();
@@ -212,12 +225,31 @@ public class Conector extends Thread{
 					}
 					else if(tipo.equals("retirar")){
 						System.out.println("Entre a "+ tipo);
-						this.eliminarIntermediario(fullJson.get("id").getAsString());
+					boolean b =	this.eliminarIntermediario(fullJson.get("id").getAsString());
+										
+					JsonObject json = new JsonObject();
+									
+					
+					json.addProperty("resultado", b);
+
+					
+					Gson gson = new GsonBuilder().create();
+					
+					String j = gson.toJson(json);
+					
+					
+						this.enviarRespuesta(j);
+					}
+					else if(tipo.equals("compraVenta")){
+						System.out.println("Entre a "+ tipo);
+						int num = fullJson.get("cantidad").getAsInt();
+						
+						this.comprarVender( fullJson.get("id").getAsString(),num);
+						
+						
 					}
 
-					//String temp = "{\"recordsTotal\": 200,\"recordsFiltered\": 20,\"data\": [{\"NOMBRE\": \"Certificado44\",\"CANTIDAD\": \"2\",\"PROMEDIO\": \"259.34\"}],\"draw\":0}";
-					//enviarRespuesta(temp);
-					//					enviarRespuesta(resp);
+				
 				}
 				closeConnectionPregunta();
 
@@ -988,5 +1020,112 @@ public class Conector extends Thread{
 		
 	}
 
+	public void comprarVender(String id , int canti){
+		
+		Connection conn = null;
+		
+		boolean res = false;
+		
+		String idValor = id;
+		
+		
+		int numValores = canti;
+		
+		try{
+			
+			conn = DAO.conectar();
+			Statement st = conn.createStatement();
+			conn.setAutoCommit(false);
+		
+		ResultSet v = st.executeQuery("select idvalor,tipovalor,precio ,sum(cantidad) as suma "
+				+ "from (select valores.idvalor ,valores.nombre,tiposvalor.nombre as tipovalor"
+				+ ",pendientes.cantidad ,operaciones.idoperacion,activa,operaciones.entidad as inter"
+				+ ",precio from valores,operaciones,pendientes,tiposvalor where valores.idvalor=valor "+
+				"and pendientes.idoperacion=operaciones.idoperacion and activa=1 and tiposvalor.idtipovalor=valores.tipovalor "
+				+ "and tipooperacion='VENTA'  and idvalor="+idValor+") group by idvalor, tipovalor,precio ");
+
+		if(v.next()){
+			int cantDisp = v.getInt("suma");
+			System.out.println("La cantidad disponible es: "+cantDisp +" y numero de valores es :"+numValores);
+			if(cantDisp >= numValores){
+
+				ResultSet ch = st.executeQuery("select pendientes.idoperacion,pendientes.cantidad from operaciones,pendientes where operaciones.idoperacion=pendientes.idoperacion "+
+						"and tipooperacion='VENTA' and activa=1 and valor="+idValor);
+			     
+				while(ch.next() && numValores >=1){
+					System.out.println("Entre al segundo filtro");
+					int cuant = ch.getInt("cantidad");
+					int idOpp = ch.getInt("idoperacion");
+					
+
+					if(cuant > numValores ){
+						int a = st.executeUpdate("update pendientes set cantidad=cantidad-"+numValores+" where "
+								+ "idoperacion="+idOpp);
+						if(a==1){
+							
+								numValores=0;
+							
+						}
+					}
+					else if(cuant == numValores){
+						int a = st.executeUpdate("delete from pendientes where idoperacion="+idOpp);
+						if(a==1){
+							
+								numValores=0;
+							
+						}
+						
+					}
+					else if(cuant < numValores){
+						
+						int a = st.executeUpdate("delete from pendientes where idoperacion="+idOpp);
+						if(a==1){
+							numValores -= cuant;
+						}
+						
+					}
+
+				}
+				if(numValores==0){
+					
+						System.out.println("La operacion termino con exito");
+			res = true;
+			            conn.commit();
+				}else{
+					conn.rollback();
+				}
+
+			}
+		}
+			
+			
+			DAO.cerrar(conn);
+		}catch(Exception e ){
+			e.printStackTrace();
+		}
+			 
+		
+		
+		
+		JsonObject json = new JsonObject();
+		
+		
+		
+		json.addProperty("resultado", res);
+
+		
+		Gson gson = new GsonBuilder().create();
+		
+		String j = gson.toJson(json);
+		
+		try {
+			System.out.println("Respondi !!!  "+ j);
+			this.enviarRespuesta(j);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 }

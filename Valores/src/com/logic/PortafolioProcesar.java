@@ -38,26 +38,31 @@ public class PortafolioProcesar extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		Connection conn = null;
-		Statement st = this.crearConexion(conn);
+
+		int id = (Integer) request.getSession().getAttribute("id");
+
 		try {
-			System.out.println("/////////////////ESTE ES EL ID: "+request.getSession().getAttribute("id")+"//////////////////");
+			conn = DAO.conectar();
+			Statement st = conn.createStatement();
+
+			System.out.println("/////////////////ESTE ES EL ID: "+id+"//////////////////");
 			ResultSet rs = st
-					.executeQuery("select idvalor,nombre,cantidad from valores natural join portafolio where identidad="+request.getSession().getAttribute("id"));
+					.executeQuery("select idvalor,nombre,cantidad from valores natural join portafolio where identidad="+id);
 			request.setAttribute("result", rs);
 
-			//			ResultSet c=st.executeQuery("select sum(cantidad) as total from valores natural join portafolio where identidad="+request.getSession().getAttribute("id"));
-			//			c.next();
-			//			int cantidad= c.getInt("total");
-			//			System.out.println("////////////////CANTIDAD: "+cantidad);
-			//			request.setAttribute("cantidadTotal", cantidad);
-			// while(rs.next()){
-			// System.out.println(rs.getString("nombre"));
-			// }
+			ResultSet c=st.executeQuery("select idValor , nombrevalor as nombre , cantidad from portafolioexterno where identidad = "+id);
+
+			request.setAttribute("tabla2", c);
+			
+			System.out.println("Termino los queries tranquilamente");
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.cerrar(conn);
+		//DAO.cerrar(conn);
+		
+		request.setAttribute("con", conn);
 
 
 
@@ -92,7 +97,7 @@ public class PortafolioProcesar extends HttpServlet {
 		Statement st = null;
 		try {
 			st = conn.createStatement();
-			
+
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -124,8 +129,8 @@ public class PortafolioProcesar extends HttpServlet {
 				// Debo vender ! TRANSACCION
 				estado =vender((Integer)request.getSession().getAttribute("id"),idvalor,(cantidadActual - cantidadNueva));
 			}
-			
-			
+
+
 		} catch (Exception e) {
 			// Si hay un error en la transaccion es fallido y no se pudo
 			// modificar el portafolio
@@ -134,12 +139,12 @@ public class PortafolioProcesar extends HttpServlet {
 		//prepararRequest(request, 0);
 		String resp ="n";
 		if(estado){
-			
+
 			resp="si";
 		}
-		
+
 		request.setAttribute("response", resp);
-		
+
 		String url = "/RespuestaOperacion.jsp"; // relative url for display jsp
 		// page
 		ServletContext sc = getServletContext();
@@ -307,7 +312,7 @@ public class PortafolioProcesar extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
+
 		if(resp){
 			try {
 				conn.commit();
@@ -427,30 +432,30 @@ public class PortafolioProcesar extends HttpServlet {
 		this.cerrar(conn);
 		return resp;
 	}
-	
+
 	public Connection conectar(){
-	     Connection conn = null;
-			try{
-				
-				Statement st = null;
+		Connection conn = null;
+		try{
 
-				Class.forName("oracle.jdbc.OracleDriver");
-				String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
-				String user = "ISIS2304161420";
-				String pass = "entraros66151";
-				conn = DriverManager.getConnection(dbURL, user, pass);
-				if (conn != null) {
-					return conn;
+			Statement st = null;
 
-				}else{
-					System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
-					return null;
-				}
+			Class.forName("oracle.jdbc.OracleDriver");
+			String dbURL = "jdbc:oracle:thin:@prod.oracle.virtual.uniandes.edu.co:1531:prod";
+			String user = "ISIS2304161420";
+			String pass = "entraros66151";
+			conn = DriverManager.getConnection(dbURL, user, pass);
+			if (conn != null) {
+				return conn;
 
-			}catch(Exception e){
-				e.printStackTrace();
+			}else{
+				System.out.println("VOY A RETORNAL NULLLLLLLLLLL");
+				return null;
 			}
-			return null;
+
+		}catch(Exception e){
+			e.printStackTrace();
 		}
+		return null;
+	}
 
 }

@@ -25,8 +25,8 @@ import com.google.gson.JsonParser;
 public class RetiroIntro extends HttpServlet implements IEscuchadorEventos{
 	private static final long serialVersionUID = 1L;
 	private HttpServletRequest request;
-	
-	Conector conector;
+	private String re;
+	private Conector conector;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -68,11 +68,13 @@ public class RetiroIntro extends HttpServlet implements IEscuchadorEventos{
 		conector.enviarPregunta(j);
 		
 		try {
-			Thread.sleep(10000);
+			Thread.sleep(15000);
 			} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			}
+		
+		request.setAttribute("externos", re);
 		
 		
 
@@ -134,11 +136,11 @@ public class RetiroIntro extends HttpServlet implements IEscuchadorEventos{
 		
 		String mensaje = ((MiEvento)e).getElMensaje();
 		System.out.println("mensaje recibido: " + mensaje);
-		request.setAttribute("externos", mensaje);
 		
 		
-		
-		
+		re = mensaje;
+		//request.setAttribute("externos", mensaje);
+				
 		System.out.println("Termino evento");
 		
 		Thread.currentThread().interrupt();
@@ -153,6 +155,7 @@ public class RetiroIntro extends HttpServlet implements IEscuchadorEventos{
 			e.printStackTrace();
 		}
 		conector.addEventListener(this);
+		re = "";
 	}
 
 }
