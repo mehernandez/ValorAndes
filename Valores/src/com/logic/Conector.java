@@ -437,14 +437,15 @@ public class Conector extends Thread{
 
 	public static void main(String[] args) {
 		try{
+	
 			Conector nicky = new Conector();
-			//nicky.sleep(10000);
-			//String temp = "{\"recordsTotal\": 200,\"recordsFiltered\": 20,\"data\": [{\"NOMBRE\": \"Certificado44\",\"CANTIDAD\": \"2\",\"PROMEDIO\": \"259.34\"}],\"draw\":0}";
-			//nicky.enviarRespuesta(temp);
+		
+	//		eliminarIntermediario("1000");
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		//nicky.start();
+
 	}
 
 
@@ -912,7 +913,7 @@ public class Conector extends Thread{
 
 }
 	
-	public boolean eliminarIntermediario(String idIntermediario){
+	public static boolean eliminarIntermediario(String idIntermediario){
 		
 		
 		
@@ -925,11 +926,11 @@ public class Conector extends Thread{
 			
 			 conn = DAO.conectar();
 			Statement st = conn.createStatement();
-			//Chambonada
+			
 
 				conn.setAutoCommit(false);
 					
-			//
+			
 			
 			ResultSet rs = st
 					.executeQuery("select pendientes.idoperacion,pendientes.cantidad,operaciones.tipooperacion,operaciones.valor as idvalor,entidad as identidad "
@@ -957,39 +958,34 @@ public class Conector extends Thread{
 									+ " where identidad="
 									+ idEntidad + " and idvalor=" + idValor);
 					if (f == 1) {
-						
-						//Chambonada
-						Connection cox = DAO.conectar();
-						Statement st2 = cox.createStatement();
-				
-										
-						st2.executeQuery("select * from pendientes where idoperacion="+idOp+" for update");
-						
-						//
+												
 						int g = st
 								.executeUpdate("delete from pendientes where idoperacion="
 										+ idOp);
-						DAO.cerrar(cox);
+
 						if (g == 0) {
 							ya = false;
 						}
 					} else {
-						ya = false;
+						int c = st.executeUpdate("insert into portafolio values("+idEntidad+","+idValor+","+cantidad+",'medallo')");
+						if(c== 0){
+							ya = false;
+						}
 					}
 				}
 			}
 
 			if (ya) {
 
-				int h = st
-						.executeUpdate("delete from entidades where identidad="
-								+ idIntermediario);
+				//int h = st
+					//	.executeUpdate("delete from entidades where identidad="
+						//		+ idIntermediario);
 				int b = st
 						.executeUpdate("delete from intermediarios where identidad="
 								+ idIntermediario);
-				int k = st.executeUpdate("delete from usuarios where entidad="
-						+ idIntermediario);
-				if (h == 1 && b == 1 && k == 1) {
+				//int k = st.executeUpdate("delete from usuarios where entidad="
+					//	+ idIntermediario);
+				if ( b == 1  ) {
                     conn.commit();
 					resp = true;
 					
@@ -998,10 +994,13 @@ public class Conector extends Thread{
 					
 				} else {
 					conn.rollback();
+					
+					System.out.println("Fue necesario hacer RollBack");
 				}
 			}
 			else{
 				conn.rollback();
+				System.out.println("Fue necesario hacer RollBack");
 			}
 
 		} catch (Exception e) {
