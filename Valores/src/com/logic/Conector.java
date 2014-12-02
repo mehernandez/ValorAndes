@@ -34,17 +34,17 @@ public class Conector extends Thread{
 	/**
 	 * La direccion del servidor
 	 */
-	 public final static String HOST = "186.28.34.3";    // amazon
-	
+	public final static String HOST = "186.28.34.3";    // amazon
+
 	//public final static String HOST = "186.28.34.3";  // Felipe
 
 	/**
 	 * El puerto a la conexion de pregunta
 	 */
-//	public final static int PUERTO_PREGUNTA = 12345;
-	
+	//	public final static int PUERTO_PREGUNTA = 12345;
+
 	public final static int PUERTO_PREGUNTA = 12347;   // auxiliar
-	
+
 
 	/**
 	 * El puerto a la conexion de respuesta
@@ -164,27 +164,27 @@ public class Conector extends Thread{
 		System.out.println("======================================================================");
 		System.out.println("Monitoreando preguntas y respuestas");
 		System.out.println("======================================================================");
-		
-//JsonObject json = new JsonObject();
-//		
-//		json.addProperty("method", "compraVenta");
-//		
-//		json.addProperty("id", 1);
-//		
-//		json.addProperty("cantidad", 5);
-//
-//		
-//		Gson gson = new GsonBuilder().create();
-//		
-//		String j = gson.toJson(json);
-//		
-//		try {
-//			this.enviarPregunta(j);
-//		} catch (IOException e2) {
-//			// TODO Auto-generated catch block
-//			e2.printStackTrace();
-//		}
-		
+
+		//JsonObject json = new JsonObject();
+		//		
+		//		json.addProperty("method", "compraVenta");
+		//		
+		//		json.addProperty("id", 1);
+		//		
+		//		json.addProperty("cantidad", 5);
+		//
+		//		
+		//		Gson gson = new GsonBuilder().create();
+		//		
+		//		String j = gson.toJson(json);
+		//		
+		//		try {
+		//			this.enviarPregunta(j);
+		//		} catch (IOException e2) {
+		//			// TODO Auto-generated catch block
+		//			e2.printStackTrace();
+		//		}
+
 		while(true){
 			try {
 				openConnectionPregunta();
@@ -206,14 +206,14 @@ public class Conector extends Thread{
 
 					String tipo = fullJson.get("method").getAsString();
 
-					
+
 
 					if(tipo.equals("Top20")){
 						System.out.println("Entre a "+tipo);
 						this.retornarTop20(fullJson.get("inicial").getAsString(), fullJson.get("fin").getAsString());
 					}
 					else if(tipo.equals("darValores")){
-						
+
 						System.out.println("Entre a "+ tipo);
 						this.darConsultaMovimientos(fullJson.get("inicio").getAsString(), fullJson.get("fin").getAsString(),
 								fullJson.get("start").getAsInt(),fullJson.get("length").getAsInt()  , fullJson.get("columnName").getAsString(),
@@ -225,31 +225,31 @@ public class Conector extends Thread{
 					}
 					else if(tipo.equals("retirar")){
 						System.out.println("Entre a "+ tipo);
-					boolean b =	this.eliminarIntermediario(fullJson.get("id").getAsString());
-										
-					JsonObject json = new JsonObject();
-									
-					
-					json.addProperty("resultado", b);
+						boolean b =	this.eliminarIntermediario(fullJson.get("id").getAsString());
 
-					
-					Gson gson = new GsonBuilder().create();
-					
-					String j = gson.toJson(json);
-					
-					
+						JsonObject json = new JsonObject();
+
+
+						json.addProperty("resultado", b);
+
+
+						Gson gson = new GsonBuilder().create();
+
+						String j = gson.toJson(json);
+
+
 						this.enviarRespuesta(j);
 					}
 					else if(tipo.equals("compraVenta")){
 						System.out.println("Entre a "+ tipo);
 						int num = fullJson.get("cantidad").getAsInt();
-						
+
 						this.comprarVender( fullJson.get("id").getAsString(),num);
-						
-						
+
+
 					}
 
-				
+
 				}
 				closeConnectionPregunta();
 
@@ -401,8 +401,8 @@ public class Conector extends Thread{
 	}
 
 	public void enviarRespuesta(String respuesta) throws IOException{
-		
-		
+
+
 		openConnectionRespuesta();
 
 		outRespuesta.write("PUBLICAR-" + respuesta);
@@ -437,11 +437,13 @@ public class Conector extends Thread{
 
 	public static void main(String[] args) {
 		try{
-	
+
 			Conector nicky = new Conector();
-		
-	//		eliminarIntermediario("1000");
-			
+
+			//		eliminarIntermediario("1000");
+
+//			comprarVender("5", 100);
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -483,10 +485,10 @@ public class Conector extends Thread{
 
 					String[] des = fechaDesde.split("/");
 					fechaDesde = des[1]+"/"+des[0]+"/"+des[2];
-					
+
 					String[] has = fechaHasta.split("/");
 					fechaHasta = has[1]+"/"+has[0]+"/"+has[2];
-					
+
 					System.out.println(fechaDesde + "     "+ fechaHasta );
 
 
@@ -520,11 +522,11 @@ public class Conector extends Thread{
 			String json = darJson(result, 0, 0);
 
 
-			
+
 			this.enviarRespuesta(json);
-			
-		System.out.println("Respondi el top 20  !!!!!");
-		System.out.println(json);
+
+			System.out.println("Respondi el top 20  !!!!!");
+			System.out.println(json);
 			//responder(json);
 
 
@@ -557,10 +559,10 @@ public class Conector extends Thread{
 		int conteoSearch=0;
 
 		try {
-			
+
 			String[] in = fechaInicial.split("/");
 			fechaInicial = in[1]+"/"+in[0]+"/"+in[2];
-			
+
 			String[] fin = fechaFinal.split("/");
 			fechaFinal = fin[1]+"/"+fin[0]+"/"+fin[2];
 
@@ -598,7 +600,7 @@ public class Conector extends Thread{
 		try {
 			json= json.replace("-", "/");
 			this.enviarRespuesta(json);   // responder
-			
+
 			System.out.println("Respondi !");
 			System.out.println(json);
 		} catch (IOException e) {
@@ -861,77 +863,77 @@ public class Conector extends Thread{
 
 	public String transformFromB64(String toConvert) {
 		return new String(Base64.decodeBase64(toConvert));
-		}
-	
+	}
+
 	public String encodeToB64(String toConvert){
 		byte[] encodedBytes = Base64.encodeBase64(toConvert.getBytes());
 		return new String(encodedBytes);
-		}
-	
-	
+	}
+
+
 	public void darIntermediarios(){
-		
-		
-		
+
+
+
 		Connection con = DAO.conectar();
-		
+
 		try{
-		
-		Statement st = con.createStatement();
-		
-		ResultSet rs = st
 
-				.executeQuery("select nombre , numeroRegistro as numero_registro , identidad as id from intermediarios where rownum <= 5");
+			Statement st = con.createStatement();
 
+			ResultSet rs = st
 
-		ArrayList<HashMap<String, String>> result = darHola(rs);
+					.executeQuery("select nombre , numeroRegistro as numero_registro , identidad as id from intermediarios where rownum <= 5");
 
 
-		String json = darJson(result, 0, 0);
-
-       json = json.replace("-", "_");
-		
-		this.enviarRespuesta(json);
-		
-	System.out.println("Respondi el dar Intermediarios  !!!!!");
-	System.out.println(json);
-		//responder(json);
+			ArrayList<HashMap<String, String>> result = darHola(rs);
 
 
+			String json = darJson(result, 0, 0);
 
-	} catch (Exception e) {
+			json = json.replace("-", "_");
 
-		// TODO Auto-generated catch block
+			this.enviarRespuesta(json);
 
-		e.printStackTrace();
+			System.out.println("Respondi el dar Intermediarios  !!!!!");
+			System.out.println(json);
+			//responder(json);
+
+
+
+		} catch (Exception e) {
+
+			// TODO Auto-generated catch block
+
+			e.printStackTrace();
+
+		}
+
+		DAO.cerrar(con);
+
+
 
 	}
 
-	DAO.cerrar(con);
+	public  boolean eliminarIntermediario(String idIntermediario){
 
 
 
-}
-	
-	public static boolean eliminarIntermediario(String idIntermediario){
-		
-		
-		
-	Connection conn = null;
+		Connection conn = null;
 
-	
+
 		boolean resp = false;
 
 		try {
-			
-			 conn = DAO.conectar();
-			Statement st = conn.createStatement();
-			
 
-				conn.setAutoCommit(false);
-					
-			
-			
+			conn = DAO.conectar();
+			Statement st = conn.createStatement();
+
+
+			conn.setAutoCommit(false);
+
+
+
 			ResultSet rs = st
 					.executeQuery("select pendientes.idoperacion,pendientes.cantidad,operaciones.tipooperacion,operaciones.valor as idvalor,entidad as identidad "
 							+ "from operaciones,pendientes where operaciones.idoperacion=pendientes.idoperacion and intermediario="
@@ -958,7 +960,7 @@ public class Conector extends Thread{
 									+ " where identidad="
 									+ idEntidad + " and idvalor=" + idValor);
 					if (f == 1) {
-												
+
 						int g = st
 								.executeUpdate("delete from pendientes where idoperacion="
 										+ idOp);
@@ -978,23 +980,23 @@ public class Conector extends Thread{
 			if (ya) {
 
 				//int h = st
-					//	.executeUpdate("delete from entidades where identidad="
-						//		+ idIntermediario);
+				//	.executeUpdate("delete from entidades where identidad="
+				//		+ idIntermediario);
 				int b = st
 						.executeUpdate("delete from intermediarios where identidad="
 								+ idIntermediario);
 				//int k = st.executeUpdate("delete from usuarios where entidad="
-					//	+ idIntermediario);
+				//	+ idIntermediario);
 				if ( b == 1  ) {
-                    conn.commit();
+					conn.commit();
 					resp = true;
-					
+
 					System.out.println("Se elimino el intermediario "+ idIntermediario);
-					
-					
+
+
 				} else {
 					conn.rollback();
-					
+
 					System.out.println("Fue necesario hacer RollBack");
 				}
 			}
@@ -1016,115 +1018,111 @@ public class Conector extends Thread{
 		DAO.cerrar(conn);
 
 		return resp;
-		
+
 	}
 
-	public void comprarVender(String id , int canti){
-		
+	public  void comprarVender(String id , int canti){
+
 		Connection conn = null;
-		
+
 		boolean res = false;
-		
+
 		String idValor = id;
-		
-		
+
+
 		int numValores = canti;
-		
+
 		try{
-			
+
 			conn = DAO.conectar();
 			Statement st = conn.createStatement();
 			conn.setAutoCommit(false);
-		
-		ResultSet v = st.executeQuery("select idvalor,tipovalor,precio ,sum(cantidad) as suma "
-				+ "from (select valores.idvalor ,valores.nombre,tiposvalor.nombre as tipovalor"
-				+ ",pendientes.cantidad ,operaciones.idoperacion,activa,operaciones.entidad as inter"
-				+ ",precio from valores,operaciones,pendientes,tiposvalor where valores.idvalor=valor "+
-				"and pendientes.idoperacion=operaciones.idoperacion and activa=1 and tiposvalor.idtipovalor=valores.tipovalor "
-				+ "and tipooperacion='VENTA'  and idvalor="+idValor+") group by idvalor, tipovalor,precio ");
 
-		if(v.next()){
-			int cantDisp = v.getInt("suma");
-			System.out.println("La cantidad disponible es: "+cantDisp +" y numero de valores es :"+numValores);
-			if(cantDisp >= numValores){
+			ResultSet v = st.executeQuery("select valor , sum(cantidad) as suma from  pendientes natural join operaciones where valor = "+idValor+"  and tipoOperacion='Venta' group by valor");
+//v.first();
+			if(v.next()){
+				int cantDisp = v.getInt("suma");
+				System.out.println("La cantidad disponible es: "+cantDisp +" y numero de valores es :"+numValores);
+				if(cantDisp >= numValores){
 
-				ResultSet ch = st.executeQuery("select pendientes.idoperacion,pendientes.cantidad from operaciones,pendientes where operaciones.idoperacion=pendientes.idoperacion "+
-						"and tipooperacion='VENTA' and activa=1 and valor="+idValor);
-			     
-				while(ch.next() && numValores >=1){
-					System.out.println("Entre al segundo filtro");
-					int cuant = ch.getInt("cantidad");
-					int idOpp = ch.getInt("idoperacion");
-					
+					ResultSet ch = st.executeQuery("select idoperacion , cantidad from  pendientes natural join operaciones where valor = +"+idValor+" and tipoOperacion='Venta'");
 
-					if(cuant > numValores ){
-						int a = st.executeUpdate("update pendientes set cantidad=cantidad-"+numValores+" where "
-								+ "idoperacion="+idOpp);
-						if(a==1){
-							
+					while(ch.next() && numValores >=1){
+						System.out.println("Entre al segundo filtro");
+						int cuant = ch.getInt("cantidad");
+						int idOpp = ch.getInt("idoperacion");
+
+
+						if(cuant > numValores ){
+							int a = st.executeUpdate("update pendientes set cantidad=cantidad-"+numValores+" where "
+									+ " idoperacion ="+idOpp);
+							if(a==1){
+
 								numValores=0;
-							
-						}
-					}
-					else if(cuant == numValores){
-						int a = st.executeUpdate("delete from pendientes where idoperacion="+idOpp);
-						if(a==1){
-							
-								numValores=0;
-							
-						}
-						
-					}
-					else if(cuant < numValores){
-						
-						int a = st.executeUpdate("delete from pendientes where idoperacion="+idOpp);
-						if(a==1){
-							numValores -= cuant;
-						}
-						
-					}
 
-				}
-				if(numValores==0){
-					
+							}
+						}
+						else if(cuant == numValores){
+							int a = st.executeUpdate("delete from pendientes where idoperacion="+idOpp);
+							if(a==1){
+
+								numValores=0;
+
+							}
+
+						}
+						else if(cuant < numValores){
+
+							int a = st.executeUpdate("delete from pendientes where idoperacion="+idOpp);
+							if(a==1){
+								numValores -= cuant;
+							}
+
+						}
+
+					}
+					if(numValores==0){
+
 						System.out.println("La operacion termino con exito");
-			res = true;
-			            conn.commit();
-				}else{
-					conn.rollback();
-				}
+						res = true;
+						conn.commit();
+					}else{
+						conn.rollback();
 
+						System.out.println("Fue necesario hacer RollBack");
+					}
+
+				}
 			}
-		}
-			
-			
+
+
 			DAO.cerrar(conn);
 		}catch(Exception e ){
 			e.printStackTrace();
 		}
-			 
-		
-		
-		
+
+
+
+
 		JsonObject json = new JsonObject();
-		
-		
-		
+
+
+
 		json.addProperty("resultado", res);
 
-		
+
 		Gson gson = new GsonBuilder().create();
-		
+
 		String j = gson.toJson(json);
-		
+
 		try {
 			System.out.println("Respondi !!!  "+ j);
 			this.enviarRespuesta(j);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 }
