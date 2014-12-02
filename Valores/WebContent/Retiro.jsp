@@ -10,16 +10,10 @@
 <%@ page import="com.google.gson.*" %>
 <% String login = (String)(request.getSession().getAttribute("login")) ;
 String tipo = (String)(request.getSession().getAttribute("tipo"));%>
-<%String externos = (String)(request.getAttribute("externos"));
+<%ResultSet externos = (ResultSet)(request.getAttribute("externos"));
 ResultSet result = (ResultSet)(request.getAttribute("result"));
+ %>
 
-System.out.println("externos es "+externos); %>
-
-<% JsonParser jsonParser = new JsonParser();
-JsonObject fullJson = jsonParser.parse(externos).getAsJsonObject();
-System.out.println("fullJson "+ fullJson);
-JsonArray data = fullJson.get("data").getAsJsonArray();
-System.out.println("data"+data);%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -291,17 +285,15 @@ System.out.println("data"+data);%>
 
                                                               
                              
-                            	     <h2> Intermediarios Disponibles bolsa local: </h2>
+                            	     <h2> Intermediarios Disponibles bolsa externa: </h2>
                             
                             	
                             	<select class="form-control" name="idIntermediario">
-									<%Iterator it = data.iterator();
+									<%
 									
-									while (it.hasNext()){ 
-									JsonElement js = (JsonElement)it.next();
-									System.out.println("El json element"+ js);
-									JsonObject j = js.getAsJsonObject();%>
-									<option><%=j.get("id").getAsString()+":"+j.get("nombre").getAsString()%></option>
+									while (externos.next()){ 
+									%>
+									<option><%=externos.getInt("id")+":"+externos.getString("nombre")%></option>
 								   <%} %>
                             	</select >
                                   <br><br>

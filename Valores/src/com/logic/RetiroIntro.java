@@ -22,7 +22,7 @@ import com.google.gson.JsonParser;
 /**
  * Servlet implementation class RetiroIntro
  */
-public class RetiroIntro extends HttpServlet implements IEscuchadorEventos{
+public class RetiroIntro extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private HttpServletRequest request;
 	private String re;
@@ -45,19 +45,35 @@ public class RetiroIntro extends HttpServlet implements IEscuchadorEventos{
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
+		try {
+		//	conector = Conector.getInstance();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		this.request = request;
 		Connection conn = null;
+		Connection cox = null;
 		Statement st = this.crearConexion(conn);
-		try {
+		
+		Statement st2 = null ;
+		
+		try{
 			ResultSet rs = st
 					.executeQuery("SELECT IDENTIDAD AS ID,NOMBRE,DIRECCION,CIUDAD,TELEFONO FROM INTERMEDIARIOS");
 			request.setAttribute("result", rs);
+			cox = DAO.conectar();
+			st2 = cox.createStatement();
+			
+			ResultSet rs2 = st2.executeQuery("select * from intermediarios2 where rownum <=5");
+			request.setAttribute("externos", rs2);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.cerrar(conn);
+		//this.cerrar(conn);
 		
 		JsonObject json = new JsonObject();
 		
@@ -65,16 +81,16 @@ public class RetiroIntro extends HttpServlet implements IEscuchadorEventos{
 		
 		String j = new GsonBuilder().create().toJson(json);
 		
-		conector.enviarPregunta(j);
+//		conector.enviarPregunta(j);
 		
-		try {
-			Thread.sleep(15000);
-			} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			}
+//		try {
+//			Thread.sleep(15000);
+//			} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			}
 		
-		request.setAttribute("externos", re);
+		//request.setAttribute("externos", re);
 		
 		
 
@@ -130,32 +146,32 @@ public class RetiroIntro extends HttpServlet implements IEscuchadorEventos{
 	}
 	
 	
-	public void manejarEvento(EventObject e)  {
-		System.out.println("empezo evento");
-		
-		
-		String mensaje = ((MiEvento)e).getElMensaje();
-		System.out.println("mensaje recibido: " + mensaje);
-		
-		
-		re = mensaje;
-		//request.setAttribute("externos", mensaje);
-				
-		System.out.println("Termino evento");
-		
-		Thread.currentThread().interrupt();
-		}
+//	public void manejarEvento(EventObject e)  {
+//		System.out.println("empezo evento");
+//		
+//		
+//		String mensaje = ((MiEvento)e).getElMensaje();
+//		System.out.println("mensaje recibido: " + mensaje);
+//		
+//		
+//		re = mensaje;
+//		//request.setAttribute("externos", mensaje);
+//				
+//		System.out.println("Termino evento");
+//		
+//		Thread.currentThread().interrupt();
+//		}
 
 
-	public void init(){
-		try {
-			conector = Conector.getInstance();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		conector.addEventListener(this);
-		re = "";
-	}
+//	public void init(){
+//		try {
+//			conector = Conector.getInstance();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		conector.addEventListener(this);
+//		re = "";
+//	}
 
 }

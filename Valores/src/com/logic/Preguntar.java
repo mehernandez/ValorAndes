@@ -119,13 +119,15 @@ JsonObject json = new JsonObject();
 		// TODO Auto-generated method stub
 		String id = request.getParameter("idIntermediario");
 		
+		String[] str = id.split(":");
+		
 		JsonObject json = new JsonObject();
 		
-		json.addProperty("method", "compraVenta");
+		json.addProperty("method", "retirar");
 		
-		json.addProperty("id", 1);
+		json.addProperty("id", str[0]);
 		
-		json.addProperty("cantidad", 5);
+
 
 		
 		Gson gson = new GsonBuilder().create();
